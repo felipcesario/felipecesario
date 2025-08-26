@@ -15,7 +15,7 @@ export default function About() {
         <div className="relative mx-auto order-1 md:order-1 w-[80vw] max-w-[420px]">
           <div className="absolute -inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.6)]" />
           <Image
-            src="/img/felipe-sobre.jpg"
+            src="/img/felipe2.jpg"
             alt="Foto de Felipe Cesario"
             width={500}
             height={600}
