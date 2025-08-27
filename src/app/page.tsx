@@ -3,7 +3,7 @@ import Header from "@/components/layout/Header";
 import Intro from "@/components/sections/Intro";
 import PracticeAreas from "@/components/sections/PracticeAreas";
 import Depoimentos from "@/components/sections/Depoimentos";
-import Footer from "@/components/sections/Footer";
+import Footer from "@/components/layout/Footer";
 import Sobre from "@/components/sections/Sobre";
 import Contato from "@/components/sections/Contato";
 
@@ -14,14 +14,8 @@ export default function Home() {
 
       <Intro
         name="Felipe Cesario"
-        photoUrl="/img/felipe.jpg"
-        whatsapp="5599999999999"
+        photoUrl="/img/felipe2.jpg"
         cityTag="Atendimento em Curitiba"
-        headline="Defesa Criminal estratégica e humanizada"
-        subheadline="Prestação de serviço de advocacia responsável e eficiente."
-        ctaLabel="Entrar em Contato"
-        secondaryCtaHref="#atuacao"
-        secondaryCtaLabel="Áreas de atuação"
       />
 
       <PracticeAreas
@@ -100,7 +94,7 @@ export default function Home() {
         ]}
       />
 
-      <Contato/>
+      <Contato />
       <Footer />
     </>
   );

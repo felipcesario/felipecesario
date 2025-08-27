@@ -1,94 +1,64 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useMemo } from "react";
 
 type Props = {
   name: string;
-  headline?: string;
-  subheadline?: string;
   photoUrl: string;
-  whatsapp?: string;
-  ctaLabel?: string;
-  secondaryCtaHref?: string;
-  secondaryCtaLabel?: string;
   cityTag?: string;
 };
 
 export default function Intro({
   name,
-  headline = "Defesa Criminal estratégica e humanizada",
-  subheadline = "Atuação técnica, comunicação clara e foco no resultado — cada caso tratado com prioridade e respeito.",
   photoUrl,
-  whatsapp,
-  ctaLabel = "Agendar consulta",
-  secondaryCtaHref = "#atuacao",
-  secondaryCtaLabel = "Áreas de atuação",
   cityTag,
 }: Props) {
-  const waHref = useMemo(() => {
-    if (!whatsapp) return undefined;
-    const base = whatsapp.startsWith("+")
-      ? whatsapp
-      : `+55${whatsapp.replace(/\D/g, "")}`;
-    const msg = encodeURIComponent(`Oi, sou ${name.split(" ")[0]}. Quero uma consulta.`);
-    return `https://wa.me/${base}?text=${msg}`;
-  }, [whatsapp, name]);
-
   return (
     <section
       id="inicio"
       className="relative w-full bg-blue text-brand-white overflow-hidden"
       aria-label="Seção de apresentação"
     >
-      <div className="pointer-events-none absolute inset-x-0 -top-1 h-1 bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-70" />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-[-15%] top-0 hidden h[120vh] w-[60vw] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(205,176,112,0.20),rgba(205,176,112,0)_60%)] md:block"
-      />
-      <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 items-center gap-8 px-4 py-14 sm:px-6 md:min-h-[88vh] md:grid-cols-2 md:gap-8 lg:gap-10 md:py-20">
-        {/* coluna de texto com leve deslocamento à direita em md+ */}
-        <div className="order-1 md:order-1 md:pl-6 lg:pl-10">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] sm:text-xs tracking-wide">
-            <span className="inline-block h-2 w-2 rounded-full bg-sand" />
-            {cityTag ?? "Consultas presenciais e online"}
-          </p>
+      <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 md:grid-cols-2 gap-10 px-4 py-14 sm:px-6 md:py-20">
+        
+        <div className="flex flex-col justify-center md:pl-6 lg:pl-10">
+          
 
-          <h1 className="font-serif text-[clamp(2rem,6vw,3.5rem)] leading-[1.1]">
-            {headline}
+          <h1 className="font-serif text-[clamp(1.6rem,4.5vw,2.4rem)] leading-snug font-bold text-white">
+            Preso em flagrante? Precisa de um advogado AGORA?
           </h1>
 
-          <p className="mt-4 max-w-xl text-sm/relaxed text-brand-white/90 sm:text-base/relaxed">
-            {subheadline}
+          <p className="mt-2 max-w-md text-sm/relaxed text-brand-white/90 sm:text-base/relaxed">
+            Atendimento criminal 24h para prisões em flagrante, audiências de custódia e casos urgentes.
           </p>
 
-          <div className="mt-8 flex w-full flex-wrap items-center gap-3">
-            {waHref && (
-              <Link
-                href={waHref}
-                target="_blank"
-                aria-label={`${ctaLabel} pelo WhatsApp`}
-                className="group w-full rounded-lg bg-sand px-5 py-3 text-center font-bold text-blue transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60 sm:w-auto"
+          <div className="mt-5 w-full max-w-md rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+              <input
+                type="text"
+                placeholder="Seu nome"
+                className="w-full rounded-md border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
+                required
+              />
+              <input
+                type="tel"
+                placeholder="Seu celular"
+                className="w-full rounded-md border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full rounded-md bg-red-600 px-5 py-3 font-bold text-white transition-transform hover:scale-[1.02] hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
-                {ctaLabel}
-              </Link>
-            )}
-
-            <Link
-              href={secondaryCtaHref}
-              className="w-full rounded-lg border border-white/15 bg-white/0 px-5 py-3 text-center font-medium text-brand-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60 sm:w-auto"
-            >
-              {secondaryCtaLabel}
-            </Link>
+                Quero ajuda agora
+              </button>
+            </form>
           </div>
         </div>
 
-        {/* coluna da foto */}
-        <div className="order-2 md:order-2">
-          <div className="relative mx-auto aspect-square w-[78vw] max-w-[360px] sm:max-w-[380px] md:max-w-[420px] lg:max-w-[460px]">
+        <div className="flex justify-center items-center">
+          <div className="relative mx-auto aspect-square w-[78vw] max-w-[400px] sm:max-w-[420px] md:max-w-[460px]">
             <div className="absolute -inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]" />
-            <div className="absolute -inset-[2px] -z-10 rounded-[18px] ring-1 ring-white/10" />
             <Image
               src={photoUrl}
               alt={`Foto de ${name}`}
