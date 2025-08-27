@@ -8,11 +8,7 @@ type Props = {
   cityTag?: string;
 };
 
-export default function Intro({
-  name,
-  photoUrl,
-  cityTag,
-}: Props) {
+export default function Intro({ name, photoUrl, cityTag }: Props) {
   return (
     <section
       id="inicio"
@@ -20,16 +16,16 @@ export default function Intro({
       aria-label="Seção de apresentação"
     >
       <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 md:grid-cols-2 gap-10 px-4 py-10 sm:px-6 sm:py-14 md:py-20">
-        
         {/* Coluna da imagem (vem primeiro no mobile) */}
         <div className="order-1 md:order-2 flex justify-center items-center">
-          <div className="relative mx-auto aspect-square w-[85vw] max-w-[340px] sm:max-w-[400px] md:max-w-[460px]">
-            <div className="absolute -inset-2 sm:-inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]" />
+          <div className="relative mx-auto aspect-square w-full max-w-[340px] sm:max-w-[400px] md:max-w-[460px] overflow-hidden">
+            {/* glow / moldura */}
+            <div className="pointer-events-none absolute -inset-2 sm:-inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]" />
             <Image
               src={photoUrl}
               alt={`Foto de ${name}`}
               fill
-              sizes="(min-width: 1024px) 460px, (min-width: 640px) 400px, 85vw"
+              sizes="(min-width: 1024px) 460px, (min-width: 640px) 400px, 90vw"
               className="rounded-xl object-cover ring-1 ring-white/10"
               priority
             />
@@ -47,7 +43,7 @@ export default function Intro({
           </p>
 
           {/* Formulário destacado */}
-          <div className="mt-6 w-full max-w-md mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6">
+          <div className="mt-6 w-full max-w-md mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
             <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
               <input
                 type="text"
@@ -63,7 +59,7 @@ export default function Intro({
               />
               <button
                 type="submit"
-                className="w-full rounded-md bg-red-600 px-5 py-3 sm:py-4 font-bold text-white transition-transform hover:scale-[1.02] hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                className="w-full rounded-md bg-red-600 px-5 py-3 sm:py-4 font-bold text-white transition-transform hover:scale-[1.01] hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
                 Quero ajuda agora
               </button>

@@ -1,7 +1,7 @@
 // src/app/page.tsx
 import Header from "@/components/layout/Header";
 import Intro from "@/components/sections/Intro";
-import PracticeAreas from "@/components/sections/PracticeAreas";
+import Urgency from "@/components/sections/Urgency";
 import Depoimentos from "@/components/sections/Depoimentos";
 import Footer from "@/components/layout/Footer";
 import Sobre from "@/components/sections/Sobre";
@@ -18,33 +18,13 @@ export default function Home() {
         cityTag="Atendimento em Curitiba"
       />
 
-      <PracticeAreas
+      {/* Section 2 reestruturada (Urgency) */}
+      <Urgency
         sectionId="atuacao"
-        title="Áreas de Atuação"
-        initiallyActiveId="criminal"
-        areas={[
-          {
-            id: "criminal",
-            title: "Criminal",
-            image: "/img/direitocriminal.png",
-            description:
-              "Atuação completa em defesa criminal, com acompanhamento em inquéritos, audiências e tribunais. Foco em estratégias eficazes e defesa humanizada.",
-          },
-          {
-            id: "civil",
-            title: "Civil",
-            image: "/img/direitocivil.png",
-            description:
-              "Atendimento em causas cíveis, indenizações, contratos e disputas patrimoniais. Cada caso tratado de forma técnica e personalizada.",
-          },
-          {
-            id: "empresarial",
-            title: "Empresarial",
-            image: "/img/direitoempresarial.png",
-            description:
-              "Assessoria jurídica para empresas, incluindo prevenção de riscos, compliance, contratos e litígios estratégicos.",
-          },
-        ]}
+        // você pode customizar:
+        // title="Cada minuto conta em casos criminais"
+        // subtitle="Se você ou alguém próximo está passando por uma dessas situações, entre em contato AGORA:"
+        // ctaHref="#contato" // caso queira que o CTA pule pro form da seção Contato
       />
 
       <Sobre
