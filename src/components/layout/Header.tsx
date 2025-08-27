@@ -21,27 +21,27 @@ export default function Header() {
 
   return (
     <header className="w-full bg-blue text-brand-white shadow-md">
-      <div className="mx-auto flex max-w-7xl flex-col md:flex-row md:items-center md:justify-between px-6 py-4 gap-4 md:gap-0">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
         
-        {/* Logo */}
         <Link href="/" aria-label="Início" className="shrink-0">
           <Image
             src="/img/logo.png"
             alt="Felipe Cesario — Advogado"
-            width={180}
-            height={65}
+            width={140}
+            height={50}
             priority
+            className="w-auto h-10 md:h-14"
           />
         </Link>
 
-        {/* Telefone + Botão */}
-        <div className="flex items-center gap-4">
-          <span className="font-semibold text-lg text-sand">
+        <div className="flex items-center gap-3 md:gap-4">
+          <span className="hidden md:inline font-semibold text-base text-sand">
             Emergência: {emergencyPhone}
           </span>
+
           <a
             href={`tel:${emergencyPhone.replace(/\D/g, "")}`}
-            className="rounded-md bg-red-600 px-5 py-2 font-semibold text-white transition-transform duration-150 hover:bg-red-700 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+            className="rounded-md bg-red-600 px-4 md:px-5 py-2 text-xs md:text-base font-bold text-white transition-transform duration-150 hover:bg-red-700 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
           >
             CONSULTA URGENTE
           </a>
