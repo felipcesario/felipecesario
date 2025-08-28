@@ -31,8 +31,7 @@ export default function Depoimentos({
         {/* Título */}
         <h2
           id={titleId}
-          className="text-center font-serif text-3xl sm:text-4xl font-bold leading-tight"
-          style={{ textWrap: "balance" as any }}
+          className="text-center font-serif text-3xl sm:text-4xl font-bold leading-tight text-balance"
         >
           {titulo}
         </h2>
