@@ -20,7 +20,7 @@ export default function Urgency({
     "Prisão em flagrante",
     "Audiência de custódia",
     "Busca e apreensão",
-    "Acompanhamento em delegacia 24h",
+    "Acompanhamento 24h",
   ];
 
   const [submitting, setSubmitting] = useState(false);
@@ -37,14 +37,13 @@ export default function Urgency({
     }, 700);
   }
 
-  // ESTILO ÚNICO para todos os bullets (mesmo visual em qualquer breakpoint)
   const tileClass =
     "inline-flex w-full items-center gap-3 rounded-xl border border-sand/70 " +
     "bg-gradient-to-br from-sand/95 to-sand/85 text-blue font-semibold " +
     "px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base " +
     "shadow-[inset_0_1px_2px_rgba(255,255,255,0.38),0_6px_14px_rgba(185,162,119,0.22)] " +
     "transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-sand/60 " +
-    "min-h-[56px] sm:min-h-[64px]"; // altura consistente (mobile/desktop)
+    "min-h-[56px] sm:min-h-[64px]"; 
 
   return (
     <section
@@ -52,16 +51,13 @@ export default function Urgency({
       className="relative w-full overflow-x-hidden bg-blue text-brand-white"
       aria-label="Atendimento urgente / criminal 24h"
     >
-      {/* brilho radial bem sutil */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(52%_42%_at_14%_8%,rgba(255,255,255,0.02),transparent_70%)]"
       />
 
       <div className="relative mx-auto max-w-screen-xl px-4 md:px-6 py-14">
-        {/* Mais espaço entre colunas no desktop */}
         <div className="grid grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-          {/* TEXTO – agora é sempre primeiro no mobile */}
           <div className="order-1 col-span-12 lg:col-span-6">
             <h2 className="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
               {title}
@@ -72,7 +68,6 @@ export default function Urgency({
               {subtitle}
             </p>
 
-            {/* BULLETS: 1 coluna (mobile) → 2 colunas (≥sm) */}
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {bullets.map((label) => (
                 <li key={label}>
@@ -85,7 +80,6 @@ export default function Urgency({
             </ul>
           </div>
 
-          {/* FORM – fica à direita só em telas grandes; no mobile vem DEPOIS do texto */}
           <div className="order-2 col-span-12 lg:col-span-6 lg:pl-2 xl:pl-4">
             <div
               id={formId}

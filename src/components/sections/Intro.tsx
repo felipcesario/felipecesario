@@ -16,24 +16,8 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       aria-label="Seção de apresentação"
     >
       <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 md:grid-cols-2 gap-10 px-4 py-10 sm:px-6 sm:py-14 md:py-20">
-        {/* Coluna da imagem (vem primeiro no mobile) */}
-        <div className="order-1 md:order-2 flex justify-center items-center">
-          <div className="relative mx-auto aspect-square w-full max-w-[340px] sm:max-w-[400px] md:max-w-[460px] overflow-hidden">
-            {/* glow / moldura */}
-            <div className="pointer-events-none absolute -inset-2 sm:-inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]" />
-            <Image
-              src={photoUrl}
-              alt={`Foto de ${name}`}
-              fill
-              sizes="(min-width: 1024px) 460px, (min-width: 640px) 400px, 90vw"
-              className="rounded-xl object-cover ring-1 ring-white/10"
-              priority
-            />
-          </div>
-        </div>
-
-        {/* Coluna Texto + Form */}
-        <div className="order-2 md:order-1 flex flex-col justify-center md:pl-6 lg:pl-10">
+        {/* Coluna Texto + Form (vem primeiro no mobile) */}
+        <div className="order-1 md:order-1 flex flex-col justify-center md:pl-6 lg:pl-10">
           <h1 className="font-serif text-[clamp(1.4rem,5vw,2.4rem)] leading-snug font-bold text-white text-center md:text-left">
             Preso em flagrante? Precisa de um advogado AGORA?
           </h1>
@@ -64,6 +48,22 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 Quero ajuda agora
               </button>
             </form>
+          </div>
+        </div>
+
+        {/* Coluna da imagem (vem depois no mobile) */}
+        <div className="order-2 md:order-2 flex justify-center items-center">
+          <div className="relative mx-auto aspect-square w-full max-w-[340px] sm:max-w-[400px] md:max-w-[460px] overflow-hidden">
+            {/* glow / moldura */}
+            <div className="pointer-events-none absolute -inset-2 sm:-inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]" />
+            <Image
+              src={photoUrl}
+              alt={`Foto de ${name}`}
+              fill
+              sizes="(min-width: 1024px) 460px, (min-width: 640px) 400px, 90vw"
+              className="rounded-xl object-cover ring-1 ring-white/10"
+              priority
+            />
           </div>
         </div>
       </div>
