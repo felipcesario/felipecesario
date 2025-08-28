@@ -1,92 +1,135 @@
 "use client";
 
 import Link from "next/link";
-import { FaWhatsapp, FaInstagram, FaEnvelope, FaLocationDot } from "react-icons/fa6";
+import {
+  FaWhatsapp,
+  FaInstagram,
+  FaEnvelope,
+  FaLocationDot,
+  FaPhone,
+} from "react-icons/fa6";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+
+  // Dados do escritório
+  const whatsappHref = "https://wa.me/5599999999999"; // DDD+numero
+  const telFixo = "+55 (41) 3333-3333";
+  const telCel = "+55 (41) 9 9999-9999";
+  const email = "contato@felipacesario.adv.br";
+  const endereco =
+    "Rua Exemplo, 123 – Centro, Curitiba/PR • CEP 80000-000";
+  const oab = "OAB/PR 123.456";
 
   return (
     <footer className="relative w-full bg-blue text-brand-white">
       {/* filete superior */}
       <div className="pointer-events-none h-1 w-full bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-70" />
 
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
-          {/* Brand */}
-          <div className="md:col-span-2">
-            <h3 className="font-serif text-2xl font-bold">Felipe Cesario</h3>
-            <p className="mt-3 max-w-md text-sm text-brand-white/85">
-              Defesa criminal estratégica e humanizada, com comunicação clara e atuação técnica,
-              priorizando cada etapa do seu caso.
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        {/* GRID responsivo: 1 → 2 (sm) → 3 (md) colunas */}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+          {/* CONTATOS */}
+          <section
+            aria-label="Contatos"
+            className="space-y-4 border-white/10 sm:border-0 sm:pb-0 sm:pt-0"
+          >
+            <h4 className="font-serif text-xl font-bold sm:text-lg">Contatos</h4>
+
+            <ul className="grid gap-3 text-[15px] md:text-sm text-brand-white/85">
+              <li>
+                <a
+                  href={`tel:${telFixo.replace(/\s|\(|\)|-/g, "")}`}
+                  className="group inline-flex w-full items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
+                  aria-label={`Ligar para ${telFixo}`}
+                >
+                  <FaPhone className="opacity-80" aria-hidden="true" />
+                  <span className="leading-tight">{telFixo}</span>
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  className="group inline-flex w-full items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
+                  aria-label="Abrir conversa no WhatsApp"
+                >
+                  <FaWhatsapp className="opacity-80" aria-hidden="true" />
+                  <span className="leading-tight">{telCel}</span>
+                </a>
+              </li>
+
+              <li>
+                <Link
+                  href={`mailto:${email}`}
+                  className="group inline-flex w-full items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
+                  aria-label="Enviar e-mail"
+                >
+                  <FaEnvelope className="opacity-80" aria-hidden="true" />
+                  <span className="leading-tight">{email}</span>
+                </Link>
+              </li>
+            </ul>
+          </section>
+
+          {/* ENDEREÇO */}
+          <section aria-label="Endereço" className="space-y-4">
+            <h4 className="font-serif text-xl font-bold sm:text-lg">Endereço</h4>
+
+            <p className="flex items-start gap-3 text-[15px] md:text-sm text-brand-white/85 leading-relaxed">
+              <FaLocationDot
+                className="mt-1 shrink-0 opacity-80"
+                aria-hidden="true"
+              />
+              <span>{endereco}</span>
             </p>
+            <p className="text-xs text-brand-white/70">
+              Atendimentos presenciais e online.
+            </p>
+          </section>
 
-            <div className="mt-6 flex items-center gap-3 text-sm text-brand-white/85">
-              <FaLocationDot className="opacity-80" />
-              <span>Curitiba • PR — Atendimentos presenciais e online</span>
-            </div>
+          {/* INFORMAÇÕES / REDES */}
+          <section aria-label="Informações" className="space-y-4">
+            <h4 className="font-serif text-xl font-bold sm:text-lg">Informações</h4>
 
-            <div className="mt-4 flex items-center gap-4">
-              <Link
-                href="https://wa.me/5599999999999"
+            <p className="text-[15px] md:text-sm text-brand-white/85">{oab}</p>
+
+            {/* Ícones com alvo 44x44 para toque no mobile */}
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={whatsappHref}
                 target="_blank"
                 aria-label="WhatsApp"
-                className="inline-flex items-center gap-2 rounded-lg bg-sand px-4 py-2 font-semibold text-blue hover:opacity-95"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500 text-white transition hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-white/30"
               >
-                <FaWhatsapp />
-                WhatsApp
-              </Link>
-              <Link
-                href="mailto:contato@felipacesario.adv.br"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/0 px-4 py-2 font-medium text-brand-white hover:bg-white/5"
-                aria-label="Enviar e-mail"
-              >
-                <FaEnvelope />
-                E-mail
-              </Link>
+                <FaWhatsapp aria-hidden="true" />
+              </a>
               <Link
                 href="#"
                 aria-label="Instagram"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 hover:bg-white/5"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 text-brand-white transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
               >
-                <FaInstagram />
+                <FaInstagram aria-hidden="true" />
+              </Link>
+              <Link
+                href={`mailto:${email}`}
+                aria-label="Enviar e-mail"
+                className="inline-flex h-11 items-center justify-center rounded-xl border border-white/15 px-3 text-sm text-brand-white transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
+              >
+                <FaEnvelope aria-hidden="true" />
+                <span className="sr-only">E-mail</span>
               </Link>
             </div>
-          </div>
-
-          <nav aria-label="Rodapé — navegação" className="grid gap-3 text-sm">
-            <h4 className="mb-2 font-serif text-lg font-bold">Navegação</h4>
-            <Link href="#inicio" className="text-brand-white/85 hover:text-brand-white">
-              Início
-            </Link>
-            <Link href="#atuacao" className="text-brand-white/85 hover:text-brand-white">
-              Áreas de atuação
-            </Link>
-            <Link href="#sobre" className="text-brand-white/85 hover:text-brand-white">
-              Sobre
-            </Link>
-            <Link href="#depoimentos" className="text-brand-white/85 hover:text-brand-white">
-              Depoimentos
-            </Link>
-            <Link href="#contato" className="text-brand-white/85 hover:text-brand-white">
-              Contato
-            </Link>
-          </nav>
-
-          <div className="grid gap-3 text-sm">
-            <h4 className="mb-2 font-serif text-lg font-bold">Contato</h4>
-            <p className="text-brand-white/85">contato@felipacesario.adv.br</p>
-            <p className="text-brand-white/85">+55 (99) 99999-9999</p>
-            <p className="text-brand-white/70 text-xs">
-              Atendimento com hora marcada.
-            </p>
-          </div>
+          </section>
         </div>
 
-        <div className="mt-12 h-px w-full bg-white/10" />
+        {/* divisor sutil */}
+        <div className="mt-10 h-px w-full bg-white/10" />
 
+        {/* COPYRIGHT / DESENVOLVIDO POR */}
         <div className="mt-6 flex flex-col items-center justify-between gap-3 text-xs sm:flex-row">
-          <p className="text-brand-white/70">
+          <p className="text-center text-brand-white/70 sm:text-left">
             © {year} Felipe Cesario. Todos os direitos reservados.
           </p>
           <p className="text-brand-white/70">
