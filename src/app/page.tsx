@@ -20,9 +20,9 @@ export default function Home() {
 
       <Authority
         sectionId="autoridade"
-        years={3}
+        years={5}
         lawyerName="Felipe Cesario"
-        oab="OAB N° 123456"
+        oab="OAB/SC N° 71.088"
         photoUrl="/img/felipe2.jpg"
       />
 
@@ -31,7 +31,7 @@ export default function Home() {
       <Depoimentos
         idSecao="confianca"
         casosSucesso={40}
-        anosExperiencia={3}
+        anosExperiencia={5}
       />
 
       <Contato />

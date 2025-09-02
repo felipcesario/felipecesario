@@ -20,7 +20,8 @@ export default function Urgency({
     "Prisão em flagrante",
     "Audiência de custódia",
     "Busca e apreensão",
-    "Acompanhamento 24h",
+    "Acompanhamento Processual",
+    "Consultoria Juridica Especializada"
   ];
 
   const [submitting, setSubmitting] = useState(false);

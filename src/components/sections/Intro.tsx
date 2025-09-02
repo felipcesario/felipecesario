@@ -23,7 +23,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
           </h1>
 
           <p className="mt-3 max-w-lg text-sm/relaxed text-brand-white/90 sm:text-base/relaxed text-center md:text-left">
-            Atendimento criminal 24h para prisões em flagrante, audiências de custódia e casos urgentes.
+            Atendimento para prisões em flagrante, audiências de custódia e casos urgentes.
           </p>
 
           {/* Formulário destacado */}
@@ -45,7 +45,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 type="submit"
                 className="w-full rounded-md bg-red-600 px-5 py-3 sm:py-4 font-bold text-white transition-transform hover:scale-[1.01] hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
-                Quero ajuda agora
+                Falar com Advogado
               </button>
             </form>
           </div>

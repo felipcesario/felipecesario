@@ -1,4 +1,3 @@
-// src/components/sections/Depoimentos.tsx
 "use client";
 
 type Props = {
@@ -17,7 +16,7 @@ export default function Depoimentos({
   titulo = "Confiança comprovada na defesa dos nossos clientes",
   casosSucesso = 120,
   anosExperiencia = 5,
-  reconhecimentoTexto = "Advogado atuante e respeitado em tribunais e processos de grande relevância.",
+  reconhecimentoTexto = "Advogado atuante e respeitado em tribunais e reconhecido por sua atuação humanizada e estratégica.",
 }: Props) {
   const titleId = `${idSecao}-title`;
 
@@ -143,7 +142,6 @@ export default function Depoimentos({
             </div>
           </article>
 
-          {/* Maria A. */}
           <article className={cardBase}>
             <div className="flex h-full flex-col md:flex-row md:items-start md:gap-4">
               <div className="shrink-0">
@@ -161,7 +159,7 @@ export default function Depoimentos({
                   “Explicou cada detalhe do processo com clareza e me transmitiu
                   segurança do início ao fim.”
                 </p>
-                <footer className="mt-4 font-semibold text-sand">Maria A.</footer>
+                <footer className="mt-4 font-semibold text-sand">Gabrielle M.</footer>
               </blockquote>
             </div>
           </article>

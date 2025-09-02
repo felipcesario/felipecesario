@@ -12,18 +12,15 @@ import {
 export default function Footer() {
   const year = new Date().getFullYear();
 
-  // Dados do escritório
-  const whatsappHref = "https://wa.me/5599999999999"; // DDD+numero
-  const telFixo = "+55 (41) 3333-3333";
-  const telCel = "+55 (41) 9 9999-9999";
+  const whatsappHref = "https://wa.me/5599999999999";
+  const telCel = "+55 (48) 99144-7874";
   const email = "contato@felipacesario.adv.br";
   const endereco =
     "Rua Exemplo, 123 – Centro, Curitiba/PR • CEP 80000-000";
-  const oab = "OAB/PR 123.456";
+  const oab = "OAB/SC 71.088";
 
   return (
     <footer className="relative w-full bg-blue text-brand-white">
-      {/* filete superior */}
       <div className="pointer-events-none h-1 w-full bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-70" />
 
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -37,16 +34,7 @@ export default function Footer() {
             <h4 className="font-serif text-xl font-bold sm:text-lg">Contatos</h4>
 
             <ul className="grid gap-3 text-[15px] md:text-sm text-brand-white/85">
-              <li>
-                <a
-                  href={`tel:${telFixo.replace(/\s|\(|\)|-/g, "")}`}
-                  className="group inline-flex w-full items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/30"
-                  aria-label={`Ligar para ${telFixo}`}
-                >
-                  <FaPhone className="opacity-80" aria-hidden="true" />
-                  <span className="leading-tight">{telFixo}</span>
-                </a>
-              </li>
+        
 
               <li>
                 <a

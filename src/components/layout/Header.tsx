@@ -17,7 +17,7 @@ export default function Header() {
     };
   }, [open]);
 
-  const emergencyPhone = "(48) 9144-7874";
+  const emergencyPhone = "(48) 99144-7874";
 
   return (
     <header className="w-full bg-blue text-brand-white shadow-md overflow-x-hidden">
