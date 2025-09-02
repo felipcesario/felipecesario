@@ -15,8 +15,6 @@ export default function Footer() {
   const whatsappHref = "https://wa.me/5599999999999";
   const telCel = "+55 (48) 99144-7874";
   const email = "contato@felipacesario.adv.br";
-  const endereco =
-    "Rua Exemplo, 123 – Centro, Curitiba/PR • CEP 80000-000";
   const oab = "OAB/SC 71.088";
 
   return (
@@ -59,22 +57,6 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </section>
-
-          {/* ENDEREÇO */}
-          <section aria-label="Endereço" className="space-y-4">
-            <h4 className="font-serif text-xl font-bold sm:text-lg">Endereço</h4>
-
-            <p className="flex items-start gap-3 text-[15px] md:text-sm text-brand-white/85 leading-relaxed">
-              <FaLocationDot
-                className="mt-1 shrink-0 opacity-80"
-                aria-hidden="true"
-              />
-              <span>{endereco}</span>
-            </p>
-            <p className="text-xs text-brand-white/70">
-              Atendimentos presenciais e online.
-            </p>
           </section>
 
           {/* INFORMAÇÕES / REDES */}
