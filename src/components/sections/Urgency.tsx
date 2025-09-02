@@ -1,7 +1,7 @@
-// src/components/sections/Urgency.tsx
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getUTMsFromLocation, persistUTMs, loadPersistedUTMs } from "@/lib/utm";
 
 type Props = {
   sectionId?: string;
@@ -14,28 +14,77 @@ export default function Urgency({
   title = "Cada minuto conta em casos criminais",
   subtitle = "Se você ou alguém próximo está passando por uma dessas situações, entre em contato AGORA:",
 }: Props) {
-  const formId = useId();
+  const formId = "urgency_form";
+  const sectionPath = useMemo(() => {
+    if (typeof window === "undefined") return `/#${sectionId}`;
+    return `${window.location.pathname}#${sectionId}`;
+  }, [sectionId]);
 
   const bullets = [
     "Prisão em flagrante",
     "Audiência de custódia",
-    "Busca e apreensão",
     "Acompanhamento Processual",
-    "Consultoria Juridica Especializada"
+    "Consultoria Jurídica Especializada",
   ];
 
-  const [submitting, setSubmitting] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [nome, setNome] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
+  const [utms, setUtms] = useState(loadPersistedUTMs());
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    const fresh = getUTMsFromLocation();
+    const merged = { ...fresh, ...loadPersistedUTMs() };
+    setUtms(merged);
+    persistUTMs(merged);
+  }, []);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitting(true);
-    setStatusMsg(null);
-    setTimeout(() => {
-      setSubmitting(false);
-      setStatusMsg("Recebemos seus dados. Entraremos em contato em instantes.");
-      (e.currentTarget as HTMLFormElement).reset();
-    }, 700);
+    setIsSending(true);
+    setFeedback(null);
+
+    try {
+      const payload = {
+        form_id: formId,
+        section_path: sectionPath,
+        lead: {
+          nome,
+          whatsapp,
+        },
+        utm: {
+          utm_source: utms.utm_source || null,
+          utm_medium: utms.utm_medium || null,
+          utm_campaign: utms.utm_campaign || null,
+          utm_term: utms.utm_term || null,
+          utm_content: utms.utm_content || null,
+          gclid: utms.gclid || null,
+          fbclid: utms.fbclid || null,
+        },
+      };
+
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || "Falha ao enviar.");
+      }
+
+      window.open("https://wa.me/5548991447874", "_blank");
+
+      setNome("");
+      setWhatsapp("");
+      setFeedback({ type: "ok", msg: "Enviado com sucesso! Você será redirecionado." });
+    } catch (err: any) {
+      setFeedback({ type: "err", msg: err?.message || "Erro ao enviar. Tente novamente." });
+    } finally {
+      setIsSending(false);
+    }
   }
 
   const tileClass =
@@ -83,7 +132,6 @@ export default function Urgency({
 
           <div className="order-2 col-span-12 lg:col-span-6 lg:pl-2 xl:pl-4">
             <div
-              id={formId}
               className="rounded-2xl border border-blue/10 bg-brand-white text-blue shadow-[0_16px_40px_rgba(0,0,0,0.28)] p-6 md:p-7"
               aria-labelledby={`${formId}-title`}
             >
@@ -98,53 +146,49 @@ export default function Urgency({
                   </label>
                   <input
                     id={`${formId}-nome`}
-                    name="nome"
                     type="text"
-                    autoComplete="name"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
                     required
-                    placeholder="Seu nome completo"
+                    placeholder="Seu nome"
                     className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
                   />
                 </div>
 
                 <div className="mt-4">
                   <label htmlFor={`${formId}-cel`} className="text-sm font-semibold">
-                    Celular
+                    WhatsApp
                   </label>
                   <input
                     id={`${formId}-cel`}
-                    name="celular"
                     type="tel"
-                    autoComplete="tel"
+                    value={whatsapp}
+                    onChange={(e) => setWhatsapp(e.target.value)}
                     required
-                    pattern="^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$"
-                    placeholder="(11) 91234-5678"
+                    placeholder="Seu WhatsApp (DDD e número)"
                     className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <label htmlFor={`${formId}-msg`} className="sr-only">Mensagem</label>
-                  <textarea
-                    id={`${formId}-msg`}
-                    name="mensagem"
-                    required
-                    placeholder="Explique rapidamente o que aconteceu…"
-                    className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none min-h-28 resize-y focus:border-sand focus:ring-2 focus:ring-sand/40"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isSending}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-base font-bold text-white shadow-[0_10px_24px_rgba(220,38,38,0.35)] transition hover:bg-red-700 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-brand-white disabled:opacity-60"
                 >
-                  {submitting ? "Enviando…" : "Preciso de Ajuda Agora"}
+                  {isSending ? "Enviando…" : "Preciso de Ajuda Agora"}
                 </button>
 
-                <div role="status" aria-live="polite" className="mt-3 text-sm text-blue/80">
-                  {statusMsg}
-                </div>
+                {feedback && (
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className={`mt-3 text-sm ${
+                      feedback.type === "ok" ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {feedback.msg}
+                  </div>
+                )}
               </form>
             </div>
           </div>

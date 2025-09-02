@@ -15,7 +15,6 @@ export default function Home() {
       <Intro
         name="Felipe Cesario"
         photoUrl="/img/felipe2.jpg"
-        cityTag="Atendimento em Curitiba"
       />
 
       <Authority
