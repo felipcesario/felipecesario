@@ -9,6 +9,11 @@ type Props = {
   subtitle?: string;
 };
 
+type LeadResponse = { ok?: boolean; error?: string };
+function isLeadResponse(x: unknown): x is LeadResponse {
+  return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
+}
+
 export default function Urgency({
   sectionId = "ajuda-urgente",
   title = "Cada minuto conta em casos criminais",
@@ -49,10 +54,7 @@ export default function Urgency({
       const payload = {
         form_id: formId,
         section_path: sectionPath,
-        lead: {
-          nome,
-          whatsapp,
-        },
+        lead: { nome, whatsapp },
         utm: {
           utm_source: utms.utm_source || null,
           utm_medium: utms.utm_medium || null,
@@ -70,9 +72,16 @@ export default function Urgency({
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json().catch(() => ({} as any));
-      if (!res.ok || !(data as any)?.ok) {
-        throw new Error((data as any)?.error || "Falha ao enviar.");
+      let data: unknown = undefined;
+      try {
+        data = await res.json();
+      } catch {
+        // ignore json parse errors
+      }
+
+      if (!res.ok || !(isLeadResponse(data) && data.ok)) {
+        const errMsg = isLeadResponse(data) && data.error ? data.error : "Falha ao enviar.";
+        throw new Error(errMsg);
       }
 
       window.open("https://wa.me/5548991447874", "_blank");

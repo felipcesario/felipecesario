@@ -5,6 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { getUTMsFromLocation, persistUTMs, loadPersistedUTMs } from "@/lib/utm";
 
+type LeadResponse = { ok?: boolean; error?: string };
+function isLeadResponse(x: unknown): x is LeadResponse {
+  return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
+}
+
 export default function Contato() {
   const formId = "contato_form";
   const sectionPath = useMemo(() => {
@@ -52,8 +57,17 @@ export default function Contato() {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json().catch(() => ({} as any));
-      if (!res.ok || !(data as any)?.ok) throw new Error((data as any)?.error || "Falha ao enviar.");
+      let data: unknown = undefined;
+      try {
+        data = await res.json();
+      } catch {
+        // ignore json parse errors
+      }
+
+      if (!res.ok || !(isLeadResponse(data) && data.ok)) {
+        const errMsg = isLeadResponse(data) && data.error ? data.error : "Falha ao enviar.";
+        throw new Error(errMsg);
+      }
 
       // abre WhatsApp em nova guia
       window.open("https://wa.me/5548991447874", "_blank");
