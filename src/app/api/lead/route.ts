@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 const WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL;
 
 type LeadPayload = {
-  form_id: string;           
-  section_path: string;      
+  form_id: string;
+  section_path: string;
   lead: {
     nome: string;
     whatsapp: string;
@@ -53,10 +53,12 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : "Erro inesperado";
     return NextResponse.json(
-      { ok: false, error: err?.message || "Erro inesperado" },
-      { status: 500 }
+        { ok: false, error: message },
+        { status: 500 }
     );
   }
 }

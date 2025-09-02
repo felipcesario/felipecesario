@@ -11,6 +11,9 @@ type Props = {
 };
 
 export default function Intro({ name, photoUrl, cityTag }: Props) {
+  // evitar warning de variável não usada sem alterar UI
+  void cityTag;
+
   const formId = "intro_form";
   const sectionPath = useMemo(() => {
     if (typeof window === "undefined") return "/#inicio";
@@ -60,16 +63,17 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) {
-        throw new Error(data?.error || "Falha ao enviar.");
+      const data = await res.json().catch(() => ({} as any));
+      if (!res.ok || !(data as any)?.ok) {
+        throw new Error((data as any)?.error || "Falha ao enviar.");
       }
 
       // ✅ abre WhatsApp em nova aba
       window.open("https://wa.me/5548991447874", "_blank");
-
-    } catch (err: any) {
-      setFeedback({ type: "err", msg: err?.message || "Erro ao enviar. Tente novamente." });
+      setFeedback({ type: "ok", msg: "Enviado com sucesso!" });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
+      setFeedback({ type: "err", msg });
     } finally {
       setIsSending(false);
     }

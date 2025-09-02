@@ -70,9 +70,9 @@ export default function Urgency({
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) {
-        throw new Error(data?.error || "Falha ao enviar.");
+      const data = await res.json().catch(() => ({} as any));
+      if (!res.ok || !(data as any)?.ok) {
+        throw new Error((data as any)?.error || "Falha ao enviar.");
       }
 
       window.open("https://wa.me/5548991447874", "_blank");
@@ -80,8 +80,9 @@ export default function Urgency({
       setNome("");
       setWhatsapp("");
       setFeedback({ type: "ok", msg: "Enviado com sucesso! Você será redirecionado." });
-    } catch (err: any) {
-      setFeedback({ type: "err", msg: err?.message || "Erro ao enviar. Tente novamente." });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
+      setFeedback({ type: "err", msg });
     } finally {
       setIsSending(false);
     }
@@ -93,7 +94,7 @@ export default function Urgency({
     "px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base " +
     "shadow-[inset_0_1px_2px_rgba(255,255,255,0.38),0_6px_14px_rgba(185,162,119,0.22)] " +
     "transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-sand/60 " +
-    "min-h-[56px] sm:min-h-[64px]"; 
+    "min-h-[56px] sm:min-h-[64px]";
 
   return (
     <section

@@ -5,8 +5,6 @@ import {
   FaWhatsapp,
   FaInstagram,
   FaEnvelope,
-  FaLocationDot,
-  FaPhone,
 } from "react-icons/fa6";
 
 export default function Footer() {
@@ -32,8 +30,6 @@ export default function Footer() {
             <h4 className="font-serif text-xl font-bold sm:text-lg">Contatos</h4>
 
             <ul className="grid gap-3 text-[15px] md:text-sm text-brand-white/85">
-        
-
               <li>
                 <a
                   href={whatsappHref}
