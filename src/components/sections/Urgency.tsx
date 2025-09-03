@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getUTMsFromLocation, persistUTMs, loadPersistedUTMs } from "@/lib/utm";
+import { gtmPush } from "@/lib/gtm";
 
 type Props = {
   sectionId?: string;
@@ -50,6 +51,12 @@ export default function Urgency({
     setIsSending(true);
     setFeedback(null);
 
+    gtmPush({
+      event: "form_start",
+      form_id: formId,
+      section_path: sectionPath,
+    });
+
     try {
       const payload = {
         form_id: formId,
@@ -84,6 +91,21 @@ export default function Urgency({
         throw new Error(errMsg);
       }
 
+      gtmPush({
+        event: "form_submit",
+        form_id: formId,
+        section_path: sectionPath,
+        lead_fields: ["nome", "whatsapp"],
+        utm_present: !!(utms.utm_source || utms.gclid || utms.fbclid),
+      });
+
+      gtmPush({
+        event: "click_whatsapp",
+        source: formId,
+        section_path: sectionPath,
+        phone: "5548991447874",
+      });
+
       window.open("https://wa.me/5548991447874", "_blank");
 
       setNome("");
@@ -92,6 +114,13 @@ export default function Urgency({
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
       setFeedback({ type: "err", msg });
+
+      gtmPush({
+        event: "form_error",
+        form_id: formId,
+        section_path: sectionPath,
+        error_message: msg,
+      });
     } finally {
       setIsSending(false);
     }

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { getUTMsFromLocation, persistUTMs, loadPersistedUTMs } from "@/lib/utm";
+import { gtmPush } from "@/lib/gtm";
 
 type Props = {
   name: string;
@@ -43,6 +44,13 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
     setFeedback(null);
     setIsSending(true);
 
+    // início do envio
+    gtmPush({
+      event: "form_start",
+      form_id: formId,
+      section_path: sectionPath,
+    });
+
     try {
       const payload = {
         form_id: formId,
@@ -69,7 +77,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       try {
         data = await res.json();
       } catch {
-        // ignore json parse errors (ex.: body vazio)
+        // body vazio ou não-json
       }
 
       if (!res.ok || !(isLeadResponse(data) && data.ok)) {
@@ -77,12 +85,35 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
         throw new Error(errMsg);
       }
 
-      // ✅ abre WhatsApp em nova aba
+      // sucesso
+      gtmPush({
+        event: "form_submit",
+        form_id: formId,
+        section_path: sectionPath,
+        lead_fields: ["nome", "whatsapp"],
+        utm_present: !!(utms.utm_source || utms.gclid || utms.fbclid),
+      });
+
+      // clique/abertura do whatsapp
+      gtmPush({
+        event: "click_whatsapp",
+        source: formId,
+        section_path: sectionPath,
+        phone: "5548991447874",
+      });
+
       window.open("https://wa.me/5548991447874", "_blank");
       setFeedback({ type: "ok", msg: "Enviado com sucesso!" });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
       setFeedback({ type: "err", msg });
+
+      gtmPush({
+        event: "form_error",
+        form_id: formId,
+        section_path: sectionPath,
+        error_message: msg,
+      });
     } finally {
       setIsSending(false);
     }

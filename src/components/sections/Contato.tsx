@@ -1,9 +1,9 @@
-// src/components/sections/Contato.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { getUTMsFromLocation, persistUTMs, loadPersistedUTMs } from "@/lib/utm";
+import { gtmPush } from "@/lib/gtm";
 
 type LeadResponse = { ok?: boolean; error?: string };
 function isLeadResponse(x: unknown): x is LeadResponse {
@@ -34,6 +34,12 @@ export default function Contato() {
     e.preventDefault();
     setFeedback(null);
     setIsSending(true);
+
+    gtmPush({
+      event: "form_start",
+      form_id: formId,
+      section_path: sectionPath,
+    });
 
     try {
       const payload = {
@@ -69,6 +75,21 @@ export default function Contato() {
         throw new Error(errMsg);
       }
 
+      gtmPush({
+        event: "form_submit",
+        form_id: formId,
+        section_path: sectionPath,
+        lead_fields: ["nome", "whatsapp"],
+        utm_present: !!(utms.utm_source || utms.gclid || utms.fbclid),
+      });
+
+      gtmPush({
+        event: "click_whatsapp",
+        source: formId,
+        section_path: sectionPath,
+        phone: "5548991447874",
+      });
+
       // abre WhatsApp em nova guia
       window.open("https://wa.me/5548991447874", "_blank");
 
@@ -78,6 +99,13 @@ export default function Contato() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
       setFeedback({ type: "err", msg });
+
+      gtmPush({
+        event: "form_error",
+        form_id: formId,
+        section_path: sectionPath,
+        error_message: msg,
+      });
     } finally {
       setIsSending(false);
     }
