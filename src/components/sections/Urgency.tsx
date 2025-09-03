@@ -244,7 +244,7 @@ export default function Urgency({
                   disabled={isSending}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-base font-bold text-white shadow-[0_10px_24px_rgba(220,38,38,0.35)] transition hover:bg-red-700 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-brand-white disabled:opacity-60"
                 >
-                  {isSending ? "Enviando…" : "Preciso de atendimento agora"}
+                  {isSending ? "Enviando…" : "Preciso de atendimento"}
                 </button>
 
                 {feedback && (
