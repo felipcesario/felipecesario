@@ -10,6 +10,19 @@ function isLeadResponse(x: unknown): x is LeadResponse {
   return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
 }
 
+// --- helpers para máscara visual e valor cru (somente dígitos)
+function onlyDigits(v: string) {
+  return v.replace(/\D+/g, "");
+}
+function formatBRPhone(digits: string) {
+  // Ajuste progressivo enquanto digita; alvo final: (XX) XXXXX-XXXX
+  const d = digits.slice(0, 11); // limite a 11 dígitos (DDD + 9)
+  if (d.length <= 2) return d; // começando DDD
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
 export default function Contato() {
   const formId = "contato_form";
   const sectionPath = useMemo(() => {
@@ -18,6 +31,7 @@ export default function Contato() {
   }, []);
 
   const [nome, setNome] = useState("");
+  // IMPORTANTE: `whatsapp` agora SEMPRE guarda apenas dígitos (valor cru para o webhook)
   const [whatsapp, setWhatsapp] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
@@ -45,6 +59,7 @@ export default function Contato() {
       const payload = {
         form_id: formId,
         section_path: sectionPath,
+        // Envio MANTIDO: nome e whatsapp (somente dígitos)
         lead: { nome, whatsapp },
         utm: {
           utm_source: utms.utm_source || null,
@@ -154,10 +169,17 @@ export default function Contato() {
               <input
                 id="whatsapp"
                 type="tel"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
+                // Mostra formatado, guarda cru
+                value={formatBRPhone(whatsapp)}
+                onChange={(e) => {
+                  const digits = onlyDigits(e.target.value);
+                  setWhatsapp(digits);
+                }}
                 placeholder="Seu WhatsApp (DDD e número)"
                 required
+                inputMode="numeric"
+                pattern="\d*"
+                maxLength={16} // limite compatível com máscara visual "(99) 99999-9999"
                 className="w-full rounded-xl border border-white/20 bg-white/95 text-blue placeholder-blue/60 px-4 py-3 sm:py-3.5 text-[16px] sm:text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-sand/80"
               />
             </div>

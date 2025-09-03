@@ -15,6 +15,23 @@ function isLeadResponse(x: unknown): x is LeadResponse {
   return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
 }
 
+/** helpers para máscara visual do telefone */
+function onlyDigits(s: string) {
+  return s.replace(/\D/g, "");
+}
+function formatBRPhone(digits: string) {
+  const d = onlyDigits(digits).slice(0, 11); // limita a 11 dígitos (DDD + 9)
+  if (d.length === 0) return "";
+  if (d.length <= 2) return `(${d}`;
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) {
+    // 10 dígitos -> (XX) XXXX-XXXX
+    return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  }
+  // 11 dígitos -> (XX) XXXXX-XXXX
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
 export default function Urgency({
   sectionId = "ajuda-urgente",
   title = "Cada minuto conta em casos criminais",
@@ -30,11 +47,12 @@ export default function Urgency({
     "Prisão em flagrante",
     "Audiência de custódia",
     "Acompanhamento Processual",
+    "Busca e Apreensão",
     "Consultoria Jurídica Especializada",
   ];
 
   const [nome, setNome] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
+  const [whatsappRaw, setWhatsappRaw] = useState(""); // só dígitos para enviar ao webhook
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
   const [utms, setUtms] = useState(loadPersistedUTMs());
@@ -61,7 +79,7 @@ export default function Urgency({
       const payload = {
         form_id: formId,
         section_path: sectionPath,
-        lead: { nome, whatsapp },
+        lead: { nome, whatsapp: whatsappRaw }, // envia SEM máscara
         utm: {
           utm_source: utms.utm_source || null,
           utm_medium: utms.utm_medium || null,
@@ -109,7 +127,7 @@ export default function Urgency({
       window.open("https://wa.me/5548991447874", "_blank");
 
       setNome("");
-      setWhatsapp("");
+      setWhatsappRaw("");
       setFeedback({ type: "ok", msg: "Enviado com sucesso! Você será redirecionado." });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
@@ -146,6 +164,7 @@ export default function Urgency({
       />
 
       <div className="relative mx-auto max-w-screen-xl px-4 md:px-6 py-14">
+        {/* md volta a ser 1 coluna; duas colunas só no lg */}
         <div className="grid grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
           <div className="order-1 col-span-12 lg:col-span-6">
             <h2 className="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
@@ -171,7 +190,7 @@ export default function Urgency({
 
           <div className="order-2 col-span-12 lg:col-span-6 lg:pl-2 xl:pl-4">
             <div
-              className="rounded-2xl border border-blue/10 bg-brand-white text-blue shadow-[0_16px_40px_rgba(0,0,0,0.28)] p-6 md:p-7"
+              className="rounded-2xl border border-blue/10 bg-brand-white text-blue shadow-[0_16px_40px_rgba(0,0,0,0.28)] p-6 md:p-7 max-w-xl md:mx-auto lg:ml-0"
               aria-labelledby={`${formId}-title`}
             >
               <h3 id={`${formId}-title`} className="font-serif text-2xl font-bold text-blue">
@@ -201,8 +220,20 @@ export default function Urgency({
                   <input
                     id={`${formId}-cel`}
                     type="tel"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    value={formatBRPhone(whatsappRaw)} // máscara só visual
+                    onChange={(e) => {
+                      const digits = onlyDigits(e.target.value).slice(0, 11);
+                      setWhatsappRaw(digits);
+                    }}
+                    onPaste={(e) => {
+                      // cola qualquer coisa e mantém só dígitos
+                      e.preventDefault();
+                      const pasted = (e.clipboardData.getData("text") || "").toString();
+                      const digits = onlyDigits(pasted).slice(0, 11);
+                      setWhatsappRaw(digits);
+                    }}
                     required
                     placeholder="Seu WhatsApp (DDD e número)"
                     className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"

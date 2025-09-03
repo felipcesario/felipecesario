@@ -16,6 +16,23 @@ function isLeadResponse(x: unknown): x is LeadResponse {
   return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
 }
 
+// --- helpers locais (apenas visual no input) ---
+function onlyDigits(v: string) {
+  return v.replace(/\D+/g, "");
+}
+
+// Formata parcialmente conforme digita (XX) XXXXX-XXXX
+function formatPhoneBR(digits: string) {
+  const dd = digits.slice(0, 11); // limita a 11 (DDD + 9 dígitos)
+  const len = dd.length;
+
+  if (len === 0) return "";
+  if (len <= 2) return `(${dd}`;
+  if (len <= 7) return `(${dd.slice(0, 2)}) ${dd.slice(2)}`;
+  // 8..11
+  return `(${dd.slice(0, 2)}) ${dd.slice(2, 7)}-${dd.slice(7)}`;
+}
+
 export default function Intro({ name, photoUrl, cityTag }: Props) {
   // evitar warning de variável não usada sem alterar UI
   void cityTag;
@@ -27,7 +44,10 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
   }, []);
 
   const [nome, setNome] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
+  // armazena o valor "cru" (apenas dígitos) para o webhook
+  const [whatsappRaw, setWhatsappRaw] = useState("");
+  // valor formatado apenas para exibir no input
+  const [whatsappDisplay, setWhatsappDisplay] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
   const [utms, setUtms] = useState(loadPersistedUTMs());
@@ -38,6 +58,12 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
     setUtms(merged);
     persistUTMs(merged);
   }, []);
+
+  function onChangeWhatsapp(e: React.ChangeEvent<HTMLInputElement>) {
+    const digits = onlyDigits(e.target.value);
+    setWhatsappRaw(digits);                 // mantém cru para o envio
+    setWhatsappDisplay(formatPhoneBR(digits)); // mostra formatado no input
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -55,7 +81,8 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       const payload = {
         form_id: formId,
         section_path: sectionPath,
-        lead: { nome, whatsapp },
+        // 👇 mantém o mesmo shape e envia SEM máscara (apenas dígitos)
+        lead: { nome, whatsapp: whatsappRaw },
         utm: {
           utm_source: utms.utm_source || null,
           utm_medium: utms.utm_medium || null,
@@ -125,8 +152,8 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       className="relative w-full bg-blue text-brand-white overflow-hidden"
       aria-label="Seção de apresentação"
     >
-      <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 md:grid-cols-2 gap-10 px-4 py-10 sm:px-6 sm:py-14 md:py-20">
-        <div className="order-1 md:order-1 flex flex-col justify-center md:pl-6 lg:pl-10">
+      <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 px-4 py-10 sm:px-6 sm:py-14 md:py-20">
+        <div className="order-1 md:order-1 flex flex-col justify-center md:pl-4 lg:pl-10">
           <h1 className="font-serif text-[clamp(1.4rem,5vw,2.4rem)] leading-snug font-bold text-white text-center md:text-left">
             Preso em flagrante? Precisa de um advogado AGORA?
           </h1>
@@ -135,7 +162,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
             Atendimento para prisões em flagrante, audiências de custódia e casos urgentes.
           </p>
 
-          <div className="mt-6 w-full max-w-md mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
+          <div className="mt-6 w-full max-w-md sm:max-w-md md:max-w-lg mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
             <form onSubmit={onSubmit} className="space-y-4">
               <input
                 type="text"
@@ -144,14 +171,19 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 onChange={(e) => setNome(e.target.value)}
                 className="w-full rounded-md border border-white/15 bg-white/10 px-4 py-3 sm:py-4 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
                 required
+                autoComplete="name"
               />
+
               <input
                 type="tel"
                 placeholder="Seu WhatsApp (DDD e número)"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
+                value={whatsappDisplay}
+                onChange={onChangeWhatsapp}
                 className="w-full rounded-md border border-white/15 bg-white/10 px-4 py-3 sm:py-4 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
                 required
+                inputMode="numeric"
+                autoComplete="tel"
+                aria-label="Seu WhatsApp (DDD e número)"
               />
 
               <button
@@ -172,13 +204,13 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
         </div>
 
         <div className="order-2 md:order-2 flex justify-center items-center">
-          <div className="relative mx-auto aspect-square w-full max-w-[340px] sm:max-w-[400px] md:max-w-[460px] overflow-hidden">
+          <div className="relative mx-auto aspect-square w-full max-w-[340px] sm:max-w-[400px] md:max-w-[440px] overflow-hidden">
             <div className="pointer-events-none absolute -inset-2 sm:-inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]" />
             <Image
               src={photoUrl}
               alt={`Foto de ${name}`}
               fill
-              sizes="(min-width: 1024px) 460px, (min-width: 640px) 400px, 90vw"
+              sizes="(min-width: 1024px) 440px, (min-width: 640px) 400px, 90vw"
               className="rounded-xl object-cover ring-1 ring-white/10"
               priority
             />

@@ -9,7 +9,7 @@ type Props = {
 };
 
 const cardBase =
-  "rounded-2xl border border-blue/10 bg-white p-5 sm:p-6 shadow-sm md:shadow-[0_10px_28px_-12px_rgba(0,0,0,.15)]";
+  "h-full rounded-2xl border border-blue/10 bg-white p-5 sm:p-6 shadow-sm md:shadow-[0_10px_28px_-12px_rgba(0,0,0,.15)]";
 
 export default function Depoimentos({
   idSecao = "confianca",
@@ -30,7 +30,7 @@ export default function Depoimentos({
         {/* Título */}
         <h2
           id={titleId}
-          className="text-center font-serif text-3xl sm:text-4xl font-bold leading-tight text-balance"
+          className="mx-auto max-w-3xl text-center font-serif text-3xl sm:text-4xl font-bold leading-tight text-balance"
         >
           {titulo}
         </h2>
@@ -40,9 +40,10 @@ export default function Depoimentos({
         />
 
         {/* Métricas */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        {/* md: usa grid de 12 colunas (6/6/12) para respiro; lg: 3 colunas padrão */}
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-12 lg:grid-cols-3">
           {/* Casos de sucesso */}
-          <article className={cardBase}>
+          <article className={`${cardBase} md:col-span-6 lg:col-span-1`}>
             <div className="flex items-start gap-3 sm:gap-4">
               <svg
                 className="h-6 w-6 sm:h-7 sm:w-7 text-sand shrink-0"
@@ -67,7 +68,7 @@ export default function Depoimentos({
           </article>
 
           {/* Anos de experiência */}
-          <article className={cardBase}>
+          <article className={`${cardBase} md:col-span-6 lg:col-span-1`}>
             <div className="flex items-start gap-3 sm:gap-4">
               <svg
                 className="h-6 w-6 sm:h-7 sm:w-7 text-sand shrink-0"
@@ -92,7 +93,7 @@ export default function Depoimentos({
           </article>
 
           {/* Reconhecimento */}
-          <article className={cardBase}>
+          <article className={`${cardBase} md:col-span-12 lg:col-span-1`}>
             <div className="flex items-start gap-3 sm:gap-4">
               <svg
                 className="h-6 w-6 sm:h-7 sm:w-7 text-sand shrink-0"
@@ -117,10 +118,8 @@ export default function Depoimentos({
           </article>
         </div>
 
-        {/* Depoimentos */}
-        <div className="mt-12 sm:mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-          {/* João M. */}
-          <article className={cardBase}>
+        <div className="mt-12 sm:mt-14 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-12 lg:grid-cols-3">
+          <article className={`${cardBase} md:col-span-6 lg:col-span-1`}>
             <div className="flex h-full flex-col md:flex-row md:items-start md:gap-4">
               <div className="shrink-0">
                 <svg
@@ -137,12 +136,13 @@ export default function Depoimentos({
                   “Fui atendido em plena madrugada e tive meu problema resolvido
                   rapidamente. Excelente profissional.”
                 </p>
-                <footer className="mt-4 font-semibold text-sand">João M.</footer>
+                <footer className="mt-4 font-semibold text-sand">João Paulo S.</footer>
               </blockquote>
             </div>
           </article>
 
-          <article className={cardBase}>
+          {/* Gabrielle M. */}
+          <article className={`${cardBase} md:col-span-6 lg:col-span-1`}>
             <div className="flex h-full flex-col md:flex-row md:items-start md:gap-4">
               <div className="shrink-0">
                 <svg
@@ -159,13 +159,15 @@ export default function Depoimentos({
                   “Explicou cada detalhe do processo com clareza e me transmitiu
                   segurança do início ao fim.”
                 </p>
-                <footer className="mt-4 font-semibold text-sand">Gabrielle M.</footer>
+                <footer className="mt-4 font-semibold text-sand">
+                  Gabrielle M.
+                </footer>
               </blockquote>
             </div>
           </article>
 
           {/* Pedro R. */}
-          <article className={cardBase}>
+          <article className={`${cardBase} md:col-span-12 lg:col-span-1`}>
             <div className="flex h-full flex-col md:flex-row md:items-start md:gap-4">
               <div className="shrink-0">
                 <svg
