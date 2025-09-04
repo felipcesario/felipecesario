@@ -10,11 +10,6 @@ type Props = {
   subtitle?: string;
 };
 
-type LeadResponse = { ok?: boolean; error?: string };
-function isLeadResponse(x: unknown): x is LeadResponse {
-  return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
-}
-
 /** helpers para máscara visual do telefone */
 function onlyDigits(s: string) {
   return s.replace(/\D/g, "");
@@ -24,15 +19,16 @@ function formatBRPhone(digits: string) {
   if (d.length === 0) return "";
   if (d.length <= 2) return `(${d}`;
   if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) {
-    // 10 dígitos -> (XX) XXXX-XXXX
-    return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  }
-  // 11 dígitos -> (XX) XXXXX-XXXX
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-/** novo: abrir whatsapp na mesma aba + envio em background */
+// tipagem segura para sendBeacon
+type NavigatorWithBeacon = Navigator & {
+  sendBeacon?: (url: string | URL, data?: BodyInit) => boolean;
+};
+
+// abrir whatsapp na mesma aba + envio em background
 const WHATSAPP_NUMBER = "5548991447874";
 
 function buildWaLink(message?: string) {
@@ -42,15 +38,15 @@ function buildWaLink(message?: string) {
 
 function sendLeadBeacon(url: string, payload: unknown) {
   try {
-    if (typeof navigator !== "undefined" && "sendBeacon" in navigator) {
-      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-      (navigator as any).sendBeacon(url, blob);
-      return;
+    if (typeof navigator !== "undefined") {
+      const nav = navigator as NavigatorWithBeacon;
+      if (typeof nav.sendBeacon === "function") {
+        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+        nav.sendBeacon(url, blob);
+        return;
+      }
     }
-  } catch {
-    // ignora erro do sendBeacon
-  }
-  // fallback com keepalive (continua mesmo navegando)
+  } catch {}
   try {
     fetch(url, {
       method: "POST",
@@ -58,9 +54,7 @@ function sendLeadBeacon(url: string, payload: unknown) {
       body: JSON.stringify(payload),
       keepalive: true,
     }).catch(() => {});
-  } catch {
-    // ignora erro do fallback
-  }
+  } catch {}
 }
 
 export default function Urgency({
@@ -73,14 +67,6 @@ export default function Urgency({
     if (typeof window === "undefined") return `/#${sectionId}`;
     return `${window.location.pathname}#${sectionId}`;
   }, [sectionId]);
-
-  const bullets = [
-    "Prisão em flagrante",
-    "Audiência de custódia",
-    "Acompanhamento Processual",
-    "Busca e Apreensão",
-    "Consultoria Jurídica Especializada",
-  ];
 
   const [nome, setNome] = useState("");
   const [whatsappRaw, setWhatsappRaw] = useState(""); // só dígitos para enviar ao webhook
@@ -140,10 +126,8 @@ export default function Urgency({
         phone: WHATSAPP_NUMBER,
       });
 
-      // mensagem inicial no whatsapp (opcional)
       const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site e preciso de ajuda urgente.`;
-      // abrir NA MESMA ABA -> não é tratado como pop-up
-      window.location.href = buildWaLink(msg);
+      window.location.href = buildWaLink(msg); // mesma aba
 
       setNome("");
       setWhatsappRaw("");
@@ -183,7 +167,6 @@ export default function Urgency({
       />
 
       <div className="relative mx-auto max-w-screen-xl px-4 md:px-6 py-14">
-        {/* md volta a ser 1 coluna; duas colunas só no lg */}
         <div className="grid grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
           <div className="order-1 col-span-12 lg:col-span-6">
             <h2 className="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
@@ -256,7 +239,6 @@ export default function Urgency({
                       setWhatsappRaw(digits);
                     }}
                     onPaste={(e) => {
-                      // cola qualquer coisa e mantém só dígitos
                       e.preventDefault();
                       const pasted = (e.clipboardData.getData("text") || "").toString();
                       const digits = onlyDigits(pasted).slice(0, 11);

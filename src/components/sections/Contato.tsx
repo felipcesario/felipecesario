@@ -5,19 +5,10 @@ import { FaWhatsapp } from "react-icons/fa";
 import { getUTMsFromLocation, persistUTMs, loadPersistedUTMs } from "@/lib/utm";
 import { gtmPush } from "@/lib/gtm";
 
-type LeadResponse = { ok?: boolean; error?: string };
-function isLeadResponse(x: unknown): x is LeadResponse {
-  return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
-}
-
-// ------------------------------
 // helpers: máscara / dígitos
-// ------------------------------
 function onlyDigits(v: string) {
   return v.replace(/\D+/g, "");
 }
-
-// (XX) XXXXX-XXXX com progressão
 function formatBRPhone(digits: string) {
   const d = digits.slice(0, 11);
   if (d.length <= 2) return d;
@@ -26,9 +17,12 @@ function formatBRPhone(digits: string) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-// ------------------------------
+// tipagem segura para sendBeacon
+type NavigatorWithBeacon = Navigator & {
+  sendBeacon?: (url: string | URL, data?: BodyInit) => boolean;
+};
+
 // novo: abrir whatsapp na MESMA aba + envio em background
-// ------------------------------
 const WHATSAPP_NUMBER = "5548991447874";
 
 function buildWaLink(message?: string) {
@@ -38,25 +32,23 @@ function buildWaLink(message?: string) {
 
 function sendLeadBeacon(url: string, payload: unknown) {
   try {
-    if (typeof navigator !== "undefined" && "sendBeacon" in navigator) {
-      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-      (navigator as any).sendBeacon(url, blob);
-      return;
+    if (typeof navigator !== "undefined") {
+      const nav = navigator as NavigatorWithBeacon;
+      if (typeof nav.sendBeacon === "function") {
+        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+        nav.sendBeacon(url, blob);
+        return;
+      }
     }
-  } catch {
-    // ignora erro do sendBeacon
-  }
+  } catch {}
   try {
-    // fallback com keepalive para não interromper ao navegar
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
       keepalive: true,
     }).catch(() => {});
-  } catch {
-    // ignora erro do fallback
-  }
+  } catch {}
 }
 
 export default function Contato() {
@@ -94,7 +86,7 @@ export default function Contato() {
     const payload = {
       form_id: formId,
       section_path: sectionPath,
-      lead: { nome, whatsapp }, // dígitos puros
+      lead: { nome, whatsapp },
       utm: {
         utm_source: utms.utm_source || null,
         utm_medium: utms.utm_medium || null,
@@ -107,7 +99,7 @@ export default function Contato() {
     };
 
     try {
-      // dispara o webhook em background (não bloqueia navegação)
+      // envia em background
       sendLeadBeacon("/api/lead", payload);
 
       gtmPush({
@@ -125,12 +117,9 @@ export default function Contato() {
         phone: WHATSAPP_NUMBER,
       });
 
-      // mensagem inicial no WhatsApp (opcional)
       const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site e preciso de ajuda urgente.`;
-      // ABRE NA MESMA ABA -> não é pop-up
       window.location.href = buildWaLink(msg);
 
-      // limpar estado local (não afeta o envio já disparado)
       setNome("");
       setWhatsapp("");
       setFeedback({ type: "ok", msg: "Enviado com sucesso!" });
@@ -195,12 +184,11 @@ export default function Contato() {
               <input
                 id="whatsapp"
                 type="tel"
-                value={formatBRPhone(whatsapp)} // exibe formatado
+                value={formatBRPhone(onlyDigits(whatsapp))} // exibe formatado
                 onChange={(e) => setWhatsapp(onlyDigits(e.target.value))} // guarda dígitos
                 placeholder="Seu WhatsApp (DDD e número)"
                 required
                 inputMode="tel"
-                pattern="^\(\d{2}\) \d{4,5}-\d{4}$"
                 maxLength={16}
                 className="w-full rounded-xl border border-white/20 bg-white/95 text-blue placeholder-blue/60 px-4 py-3 sm:py-3.5 text-[16px] sm:text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-sand/80"
                 title="Use o formato (DD) 99999-9999"

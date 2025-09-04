@@ -11,14 +11,7 @@ type Props = {
   cityTag?: string;
 };
 
-type LeadResponse = { ok?: boolean; error?: string };
-function isLeadResponse(x: unknown): x is LeadResponse {
-  return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
-}
-
-// -------------------------------------
 // helpers locais (apenas visual no input)
-// -------------------------------------
 function onlyDigits(v: string) {
   return v.replace(/\D+/g, "");
 }
@@ -34,9 +27,12 @@ function formatPhoneBR(digits: string) {
   return `(${dd.slice(0, 2)}) ${dd.slice(2, 7)}-${dd.slice(7)}`;
 }
 
-// -------------------------------------
-// novo: abrir whatsapp na mesma aba + envio em background
-// -------------------------------------
+// tipagem segura para sendBeacon (sem any)
+type NavigatorWithBeacon = Navigator & {
+  sendBeacon?: (url: string | URL, data?: BodyInit) => boolean;
+};
+
+// abrir whatsapp na mesma aba + envio em background
 const WHATSAPP_NUMBER = "5548991447874";
 
 function buildWaLink(message?: string) {
@@ -46,10 +42,13 @@ function buildWaLink(message?: string) {
 
 function sendLeadBeacon(url: string, payload: unknown) {
   try {
-    if (typeof navigator !== "undefined" && "sendBeacon" in navigator) {
-      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-      (navigator as any).sendBeacon(url, blob);
-      return;
+    if (typeof navigator !== "undefined") {
+      const nav = navigator as NavigatorWithBeacon;
+      if (typeof nav.sendBeacon === "function") {
+        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+        nav.sendBeacon(url, blob);
+        return;
+      }
     }
   } catch {
     // ignora erro do sendBeacon
