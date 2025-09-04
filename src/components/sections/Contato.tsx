@@ -15,9 +15,9 @@ function onlyDigits(v: string) {
   return v.replace(/\D+/g, "");
 }
 function formatBRPhone(digits: string) {
-  // Ajuste progressivo enquanto digita; alvo final: (XX) XXXXX-XXXX
-  const d = digits.slice(0, 11); // limite a 11 dígitos (DDD + 9)
-  if (d.length <= 2) return d; // começando DDD
+  // Alvo final: (XX) XXXXX-XXXX | aceita progressão enquanto digita
+  const d = digits.slice(0, 11); // DDD (2) + 9 (até 11 dígitos)
+  if (d.length <= 2) return d;
   if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
   if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
@@ -31,7 +31,7 @@ export default function Contato() {
   }, []);
 
   const [nome, setNome] = useState("");
-  // IMPORTANTE: `whatsapp` agora SEMPRE guarda apenas dígitos (valor cru para o webhook)
+  // whatsapp no estado guarda SOMENTE DÍGITOS (para enviar no payload)
   const [whatsapp, setWhatsapp] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
@@ -169,18 +169,17 @@ export default function Contato() {
               <input
                 id="whatsapp"
                 type="tel"
-                // Mostra formatado, guarda cru
+                // Exibe formatado, estado guarda dígitos
                 value={formatBRPhone(whatsapp)}
-                onChange={(e) => {
-                  const digits = onlyDigits(e.target.value);
-                  setWhatsapp(digits);
-                }}
+                onChange={(e) => setWhatsapp(onlyDigits(e.target.value))}
                 placeholder="Seu WhatsApp (DDD e número)"
                 required
-                inputMode="numeric"
-                pattern="\d*"
-                maxLength={16} // limite compatível com máscara visual "(99) 99999-9999"
+                inputMode="tel"
+                // aceita (99) 9999-9999 OU (99) 99999-9999
+                pattern="^\(\d{2}\) \d{4,5}-\d{4}$"
+                maxLength={16}
                 className="w-full rounded-xl border border-white/20 bg-white/95 text-blue placeholder-blue/60 px-4 py-3 sm:py-3.5 text-[16px] sm:text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-sand/80"
+                title="Use o formato (DD) 99999-9999"
               />
             </div>
 
