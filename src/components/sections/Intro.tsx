@@ -16,26 +16,59 @@ function isLeadResponse(x: unknown): x is LeadResponse {
   return typeof x === "object" && x !== null && ("ok" in x || "error" in x);
 }
 
-// --- helpers locais (apenas visual no input) ---
+// -------------------------------------
+// helpers locais (apenas visual no input)
+// -------------------------------------
 function onlyDigits(v: string) {
   return v.replace(/\D+/g, "");
 }
 
 // Formata parcialmente conforme digita (XX) XXXXX-XXXX
 function formatPhoneBR(digits: string) {
-  const dd = digits.slice(0, 11); // limita a 11 (DDD + 9 dígitos)
+  const dd = digits.slice(0, 11); // limita a 11 (DDD + 9)
   const len = dd.length;
 
   if (len === 0) return "";
   if (len <= 2) return `(${dd}`;
   if (len <= 7) return `(${dd.slice(0, 2)}) ${dd.slice(2)}`;
-  // 8..11
   return `(${dd.slice(0, 2)}) ${dd.slice(2, 7)}-${dd.slice(7)}`;
 }
 
+// -------------------------------------
+// novo: abrir whatsapp na mesma aba + envio em background
+// -------------------------------------
+const WHATSAPP_NUMBER = "5548991447874";
+
+function buildWaLink(message?: string) {
+  const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
+function sendLeadBeacon(url: string, payload: unknown) {
+  try {
+    if (typeof navigator !== "undefined" && "sendBeacon" in navigator) {
+      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+      (navigator as any).sendBeacon(url, blob);
+      return;
+    }
+  } catch {
+    // ignora erro do sendBeacon
+  }
+  // fallback se não houver sendBeacon
+  try {
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true, // importante para a navegação imediata
+    }).catch(() => {});
+  } catch {
+    // ignora erro do fallback
+  }
+}
+
 export default function Intro({ name, photoUrl, cityTag }: Props) {
-  // evitar warning de variável não usada sem alterar UI
-  void cityTag;
+  void cityTag; // evitar warning
 
   const formId = "intro_form";
   const sectionPath = useMemo(() => {
@@ -44,9 +77,9 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
   }, []);
 
   const [nome, setNome] = useState("");
-  // armazena o valor "cru" (apenas dígitos) para o webhook
+  // valor cru (só dígitos) para o envio
   const [whatsappRaw, setWhatsappRaw] = useState("");
-  // valor formatado apenas para exibir no input
+  // valor formatado apenas para exibição no input
   const [whatsappDisplay, setWhatsappDisplay] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
@@ -61,8 +94,8 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
 
   function onChangeWhatsapp(e: React.ChangeEvent<HTMLInputElement>) {
     const digits = onlyDigits(e.target.value);
-    setWhatsappRaw(digits);                 // mantém cru para o envio
-    setWhatsappDisplay(formatPhoneBR(digits)); // mostra formatado no input
+    setWhatsappRaw(digits);
+    setWhatsappDisplay(formatPhoneBR(digits));
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -77,42 +110,25 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       section_path: sectionPath,
     });
 
+    const payload = {
+      form_id: formId,
+      section_path: sectionPath,
+      lead: { nome, whatsapp: whatsappRaw }, // sem máscara
+      utm: {
+        utm_source: utms.utm_source || null,
+        utm_medium: utms.utm_medium || null,
+        utm_campaign: utms.utm_campaign || null,
+        utm_term: utms.utm_term || null,
+        utm_content: utms.utm_content || null,
+        gclid: utms.gclid || null,
+        fbclid: utms.fbclid || null,
+      },
+    };
+
     try {
-      const payload = {
-        form_id: formId,
-        section_path: sectionPath,
-        // 👇 mantém o mesmo shape e envia SEM máscara (apenas dígitos)
-        lead: { nome, whatsapp: whatsappRaw },
-        utm: {
-          utm_source: utms.utm_source || null,
-          utm_medium: utms.utm_medium || null,
-          utm_campaign: utms.utm_campaign || null,
-          utm_term: utms.utm_term || null,
-          utm_content: utms.utm_content || null,
-          gclid: utms.gclid || null,
-          fbclid: utms.fbclid || null,
-        },
-      };
+      // dispara o webhook em background (não bloqueia a navegação)
+      sendLeadBeacon("/api/lead", payload);
 
-      const res = await fetch("/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      let data: unknown = undefined;
-      try {
-        data = await res.json();
-      } catch {
-        // body vazio ou não-json
-      }
-
-      if (!res.ok || !(isLeadResponse(data) && data.ok)) {
-        const errMsg = isLeadResponse(data) && data.error ? data.error : "Falha ao enviar.";
-        throw new Error(errMsg);
-      }
-
-      // sucesso
       gtmPush({
         event: "form_submit",
         form_id: formId,
@@ -121,15 +137,18 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
         utm_present: !!(utms.utm_source || utms.gclid || utms.fbclid),
       });
 
-      // clique/abertura do whatsapp
       gtmPush({
         event: "click_whatsapp",
         source: formId,
         section_path: sectionPath,
-        phone: "5548991447874",
+        phone: WHATSAPP_NUMBER,
       });
 
-      window.open("https://wa.me/5548991447874", "_blank");
+      // mensagem inicial no whatsapp (opcional)
+      const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site e preciso de ajuda urgente.`;
+      // abrir NA MESMA ABA evita bloqueio de pop-up
+      window.location.href = buildWaLink(msg);
+
       setFeedback({ type: "ok", msg: "Enviado com sucesso!" });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
@@ -163,7 +182,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
           </p>
 
           <div className="mt-6 w-full max-w-md sm:max-w-md md:max-w-lg mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
-            <form onSubmit={onSubmit} className="space-y-4">
+            <form onSubmit={onSubmit} className="space-y-4" noValidate>
               <input
                 type="text"
                 placeholder="Seu nome"
@@ -172,6 +191,8 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 className="w-full rounded-md border border-white/15 bg-white/10 px-4 py-3 sm:py-4 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
                 required
                 autoComplete="name"
+                name="nome"
+                aria-label="Seu nome"
               />
 
               <input
@@ -183,6 +204,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 required
                 inputMode="numeric"
                 autoComplete="tel"
+                name="whatsapp"
                 aria-label="Seu WhatsApp (DDD e número)"
               />
 
@@ -190,6 +212,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 type="submit"
                 disabled={isSending}
                 className="w-full rounded-md bg-red-600 px-5 py-3 sm:py-4 font-bold text-white transition-transform hover:scale-[1.01] hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60"
+                aria-live="polite"
               >
                 {isSending ? "Enviando..." : "Falar com Advogado"}
               </button>

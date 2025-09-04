@@ -32,6 +32,37 @@ function formatBRPhone(digits: string) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
+/** novo: abrir whatsapp na mesma aba + envio em background */
+const WHATSAPP_NUMBER = "5548991447874";
+
+function buildWaLink(message?: string) {
+  const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
+function sendLeadBeacon(url: string, payload: unknown) {
+  try {
+    if (typeof navigator !== "undefined" && "sendBeacon" in navigator) {
+      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+      (navigator as any).sendBeacon(url, blob);
+      return;
+    }
+  } catch {
+    // ignora erro do sendBeacon
+  }
+  // fallback com keepalive (continua mesmo navegando)
+  try {
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // ignora erro do fallback
+  }
+}
+
 export default function Urgency({
   sectionId = "ajuda-urgente",
   title = "Cada minuto conta em casos criminais",
@@ -75,38 +106,24 @@ export default function Urgency({
       section_path: sectionPath,
     });
 
+    const payload = {
+      form_id: formId,
+      section_path: sectionPath,
+      lead: { nome, whatsapp: whatsappRaw }, // envia SEM máscara
+      utm: {
+        utm_source: utms.utm_source || null,
+        utm_medium: utms.utm_medium || null,
+        utm_campaign: utms.utm_campaign || null,
+        utm_term: utms.utm_term || null,
+        utm_content: utms.utm_content || null,
+        gclid: utms.gclid || null,
+        fbclid: utms.fbclid || null,
+      },
+    };
+
     try {
-      const payload = {
-        form_id: formId,
-        section_path: sectionPath,
-        lead: { nome, whatsapp: whatsappRaw }, // envia SEM máscara
-        utm: {
-          utm_source: utms.utm_source || null,
-          utm_medium: utms.utm_medium || null,
-          utm_campaign: utms.utm_campaign || null,
-          utm_term: utms.utm_term || null,
-          utm_content: utms.utm_content || null,
-          gclid: utms.gclid || null,
-          fbclid: utms.fbclid || null,
-        },
-      };
-
-      const res = await fetch("/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      let data: unknown = undefined;
-      try {
-        data = await res.json();
-      } catch {
-      }
-
-      if (!res.ok || !(isLeadResponse(data) && data.ok)) {
-        const errMsg = isLeadResponse(data) && data.error ? data.error : "Falha ao enviar.";
-        throw new Error(errMsg);
-      }
+      // dispara webhook em background (não bloqueia navegação)
+      sendLeadBeacon("/api/lead", payload);
 
       gtmPush({
         event: "form_submit",
@@ -120,10 +137,13 @@ export default function Urgency({
         event: "click_whatsapp",
         source: formId,
         section_path: sectionPath,
-        phone: "5548991447874",
+        phone: WHATSAPP_NUMBER,
       });
 
-      window.open("https://wa.me/5548991447874", "_blank");
+      // mensagem inicial no whatsapp (opcional)
+      const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site e preciso de ajuda urgente.`;
+      // abrir NA MESMA ABA -> não é tratado como pop-up
+      window.location.href = buildWaLink(msg);
 
       setNome("");
       setWhatsappRaw("");
@@ -176,7 +196,13 @@ export default function Urgency({
             </p>
 
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {bullets.map((label) => (
+              {[
+                "Prisão em flagrante",
+                "Audiência de custódia",
+                "Acompanhamento Processual",
+                "Busca e Apreensão",
+                "Consultoria Jurídica Especializada",
+              ].map((label) => (
                 <li key={label}>
                   <button type="button" className={tileClass}>
                     <span className="h-2 w-2 rounded-full bg-blue/70 shrink-0" aria-hidden="true" />
@@ -209,6 +235,9 @@ export default function Urgency({
                     required
                     placeholder="Seu nome"
                     className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
+                    autoComplete="name"
+                    name="nome"
+                    aria-label="Seu nome"
                   />
                 </div>
 
@@ -236,6 +265,8 @@ export default function Urgency({
                     required
                     placeholder="Seu WhatsApp (DDD e número)"
                     className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
+                    name="whatsapp"
+                    aria-label="Seu WhatsApp (DDD e número)"
                   />
                 </div>
 
@@ -243,6 +274,7 @@ export default function Urgency({
                   type="submit"
                   disabled={isSending}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-base font-bold text-white shadow-[0_10px_24px_rgba(220,38,38,0.35)] transition hover:bg-red-700 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-brand-white disabled:opacity-60"
+                  aria-live="polite"
                 >
                   {isSending ? "Enviando…" : "Preciso de atendimento"}
                 </button>
@@ -251,9 +283,7 @@ export default function Urgency({
                   <div
                     role="status"
                     aria-live="polite"
-                    className={`mt-3 text-sm ${
-                      feedback.type === "ok" ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`mt-3 text-sm ${feedback.type === "ok" ? "text-green-600" : "text-red-600"}`}
                   >
                     {feedback.msg}
                   </div>
