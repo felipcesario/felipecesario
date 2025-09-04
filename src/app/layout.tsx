@@ -19,9 +19,36 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Felipe Cesario - Advogado",
-  description: "Landing page do escritório Felipe Cesario",
-};
+  title: "Advocacia Especializada | Felipe Cesario",
+  description:
+    "Especialista em Direito Penal e casos de alta complexidade. Garanta uma defesa técnica, estratégica e eficaz.",
+  keywords: [
+    "advogado criminal",
+    "defesa penal",
+    "advocacia especializada",
+    "direito penal",
+    "advogado SC",
+    "Felipe Cesario",
+    "casos complexos",
+    "advogado"
+  ],
+  openGraph: {
+    type: "website",
+    url: "https://felipecesarioadv.com.br",
+    title: "Advocacia Especializada | Felipe Cesario",
+    description:
+      "Especialista em Direito Penal e casos de alta complexidade. Garanta uma defesa técnica, estratégica e eficaz.",
+    siteName: "Felipe Cesario Advocacia",
+    images: [
+      {
+        url: "https://felipecesarioadv.com.br/og-image.jpg", 
+        width: 1200,
+        height: 630,
+        alt: "Advocacia Especializada - Felipe Cesario",
+      },
+    ],
+  }
+}
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-PVTVSP4N";
 

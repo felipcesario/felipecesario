@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 // mantido: helper de utm (não quebra se não existir)
 import { loadPersistedUTMs } from "@/lib/utm";
 
@@ -26,7 +26,17 @@ export default function Header() {
   }, [open]);
 
   const emergencyPhone = "(48) 99144-7874";
-  const telHref = `tel:${emergencyPhone.replace(/\D/g, "")}`;
+  const phoneDigits = useMemo(() => emergencyPhone.replace(/\D/g, ""), [emergencyPhone]);
+  const telHref = `tel:${phoneDigits}`;
+
+  // WhatsApp: abre em nova guia com mensagem padrão
+  const whatsappMessage =
+    "Olá, preciso de atendimento urgente. Poderia me ajudar?";
+  const whatsappHref = useMemo(
+    () =>
+      `https://wa.me/${phoneDigits}?text=${encodeURIComponent(whatsappMessage)}`,
+    [phoneDigits]
+  );
 
   const getUTMsSafe = () => {
     try {
@@ -42,15 +52,18 @@ export default function Header() {
     window.dataLayer.push(data);
   }, []);
 
-  const handleCallClick = useCallback((label: "header_ligar" | "header_cta") => {
-    pushDL({
-      event: "click_call",
-      label,
-      phone: emergencyPhone.replace(/\D/g, ""),
-      location: "header",
-      utms: getUTMsSafe(),
-    });
-  }, [pushDL]);
+  const handleCallClick = useCallback(
+    (label: "header_ligar" | "header_cta") => {
+      pushDL({
+        event: "click_call",
+        label,
+        phone: phoneDigits,
+        location: "header",
+        utms: getUTMsSafe(),
+      });
+    },
+    [pushDL, phoneDigits]
+  );
 
   const handleContatoClick = useCallback(() => {
     pushDL({
@@ -61,32 +74,68 @@ export default function Header() {
     });
   }, [pushDL]);
 
+  const handleWhatsappClick = useCallback(() => {
+    pushDL({
+      event: "click_whatsapp",
+      label: "header_cta_whatsapp",
+      phone: phoneDigits,
+      location: "header",
+      utms: getUTMsSafe(),
+    });
+  }, [pushDL, phoneDigits]);
+
   return (
     <header className="w-full bg-blue text-brand-white shadow-md overflow-x-hidden">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
-        <Link href="/" aria-label="início" className="shrink-0">
+      <div
+        className="
+          mx-auto flex max-w-7xl items-center
+          justify-between px-3 py-2
+          sm:px-4 sm:py-3
+          md:px-6 md:py-4
+        "
+      >
+        <Link
+          href="/"
+          aria-label="início"
+          className="shrink-0"
+        >
           <Image
             src="/img/logo.png"
             alt="felipe cesario — advogado"
-            width={140}
-            height={50}
+            width={120}          // menor no mobile
+            height={40}
             priority
-            className="h-10 w-auto md:h-14"
+            className="h-8 w-auto sm:h-10 md:h-12"
           />
         </Link>
 
         {/* ações */}
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-          {/* ligar — agora visível também no mobile, mantendo o visual quadrado */}
+        <div
+          className="
+            flex items-center
+            gap-2 sm:gap-3 md:gap-4
+            flex-nowrap        // mantém tudo na mesma linha
+          "
+        >
+          {/* ligar — visível no mobile, levemente menor */}
           <a
             href={telHref}
             onClick={() => handleCallClick("header_ligar")}
-            className="inline-flex items-center gap-2 rounded-md border border-sand/60 px-3 md:px-4 py-2 text-xs md:text-sm font-semibold text-sand transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60"
+            className="
+              inline-flex items-center gap-1.5 sm:gap-2
+              rounded-md border border-sand/60
+              px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4
+              text-[11px] sm:text-xs md:text-sm
+              font-semibold text-sand transition-colors
+              hover:bg-white/10
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60
+              shrink-0
+            "
             aria-label={`ligar para emergência em ${emergencyPhone}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 md:h-5 md:w-5"
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -99,22 +148,38 @@ export default function Header() {
             <span>ligar</span>
           </a>
 
-          {/* contato — segue apenas no desktop, como antes */}
+          {/* contato — desktop apenas (evita superlotar mobile) */}
           <Link
             href="#contato"
             onClick={handleContatoClick}
-            className="hidden md:inline font-medium text-sand/90 hover:text-white transition-colors"
+            className="
+              hidden md:inline
+              font-medium text-sand/90 hover:text-white
+              transition-colors
+              shrink-0
+            "
             aria-label="ir para a seção de contato"
           >
             contato
           </Link>
 
-          {/* consulta urgente — igual ao original */}
           <a
-            href={telHref}
-            onClick={() => handleCallClick("header_cta")}
-            className="rounded-md bg-red-600 px-4 md:px-5 py-2 text-xs md:text-base font-bold text-white transition-transform duration-150 hover:bg-red-700 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-            aria-label="consulta urgente por telefone"
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleWhatsappClick}
+            className="
+              rounded-md bg-red-600
+              px-3 py-1.5 sm:px-4 sm:py-2 md:px-5
+              text-xs sm:text-sm md:text-base
+              font-bold text-white
+              transition-transform duration-150
+              hover:bg-red-700 hover:scale-[1.02]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500
+              shrink-0
+              whitespace-nowrap
+            "
+            aria-label="iniciar conversa de consulta urgente no WhatsApp"
           >
             consulta urgente
           </a>
