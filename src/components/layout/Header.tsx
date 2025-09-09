@@ -9,7 +9,9 @@ declare global {
   interface Window { dataLayer?: Array<Record<string, unknown>>; }
 }
 
-const TARGET_ID = "ajuda-urgente";
+// ⚠️ este ID TEM QUE bater com o sectionId passado pro <Urgency />
+// no seu page.tsx está <Urgency sectionId="atuacao" />
+const TARGET_ID = "atuacao";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -49,21 +51,20 @@ export default function Header() {
     pushDL({ event: "click_call", label, phone: phoneDigits, location: "header", utms: getUTMsSafe() });
   }, [pushDL, phoneDigits]);
 
-  // Se não estiver na home, navega p/ "/#ajuda-urgente".
-  // Se já estiver na home, faz scroll suave com offset do header.
-  const goToConsultoria = useCallback((e?: React.MouseEvent) => {
-    e?.preventDefault();
+  // Se já estiver na home, evita reload e dá scroll suave com offset do header.
+  const handleConsultoriaClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     pushDL({ event: "click_nav", target: "consultoria_juridica", location: "header", utms: getUTMsSafe() });
 
     if (typeof window === "undefined") return;
     const isHome = window.location.pathname === "/" || window.location.pathname === "";
-    const hash = `#${TARGET_ID}`;
 
     if (!isHome) {
-      window.location.href = `/${hash}`;
+      // Deixa o <Link> navegar normalmente para "/#atuacao"
       return;
     }
 
+    // Já na home: cancela a navegação e faz scroll suave para o ID
+    e.preventDefault();
     const el = document.getElementById(TARGET_ID);
     if (el) {
       const header = document.querySelector("header");
@@ -71,6 +72,7 @@ export default function Header() {
       const top = el.getBoundingClientRect().top + window.pageYOffset - (headerH + 12);
       window.scrollTo({ top, behavior: "smooth" });
     } else {
+      // fallback: ancora padrão
       window.location.hash = TARGET_ID;
     }
   }, [pushDL]);
@@ -106,17 +108,18 @@ export default function Header() {
             <span>ligar</span>
           </a>
 
-          {/* consultoria jurídica — agora usando Link (fix ESLint) */}
+          {/* consultoria jurídica — usa Link para rota interna + hash */}
           <Link
             href={`/#${TARGET_ID}`}
-            onClick={goToConsultoria}
+            prefetch={false}
+            onClick={handleConsultoriaClick}
             className="inline-flex items-center rounded-md px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 text-[11px] sm:text-xs md:text-sm font-semibold text-sand hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60 shrink-0"
             aria-label="ir para a seção de consultoria jurídica"
           >
             consultoria jurídica
           </Link>
 
-          {/* whatsapp CTA (externo, pode ser <a>) */}
+          {/* whatsapp CTA (externo) */}
           <a
             href={whatsappHref}
             target="_blank"
