@@ -49,8 +49,8 @@ export default function Header() {
     pushDL({ event: "click_call", label, phone: phoneDigits, location: "header", utms: getUTMsSafe() });
   }, [pushDL, phoneDigits]);
 
-  // 👉 navegação ANTI-ERRO: se não estiver na home, redireciona pra "/#ajuda-urgente".
-  // se já estiver na home, faz scroll suave com offset (header fixo).
+  // Se não estiver na home, navega p/ "/#ajuda-urgente".
+  // Se já estiver na home, faz scroll suave com offset do header.
   const goToConsultoria = useCallback((e?: React.MouseEvent) => {
     e?.preventDefault();
     pushDL({ event: "click_nav", target: "consultoria_juridica", location: "header", utms: getUTMsSafe() });
@@ -60,12 +60,10 @@ export default function Header() {
     const hash = `#${TARGET_ID}`;
 
     if (!isHome) {
-      // mantém UTMs via storage; redireciona:
       window.location.href = `/${hash}`;
       return;
     }
 
-    // mesmo path: scroll suave com offset do header
     const el = document.getElementById(TARGET_ID);
     if (el) {
       const header = document.querySelector("header");
@@ -73,7 +71,6 @@ export default function Header() {
       const top = el.getBoundingClientRect().top + window.pageYOffset - (headerH + 12);
       window.scrollTo({ top, behavior: "smooth" });
     } else {
-      // fallback absoluto
       window.location.hash = TARGET_ID;
     }
   }, [pushDL]);
@@ -109,17 +106,17 @@ export default function Header() {
             <span>ligar</span>
           </a>
 
-          {/* consultoria jurídica — AGORA TAMBÉM NO MOBILE */}
-          <a
-            href="/#ajuda-urgente"
+          {/* consultoria jurídica — agora usando Link (fix ESLint) */}
+          <Link
+            href={`/#${TARGET_ID}`}
             onClick={goToConsultoria}
             className="inline-flex items-center rounded-md px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 text-[11px] sm:text-xs md:text-sm font-semibold text-sand hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60 shrink-0"
             aria-label="ir para a seção de consultoria jurídica"
           >
             consultoria jurídica
-          </a>
+          </Link>
 
-          {/* whatsapp CTA */}
+          {/* whatsapp CTA (externo, pode ser <a>) */}
           <a
             href={whatsappHref}
             target="_blank"
