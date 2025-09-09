@@ -73,7 +73,7 @@ export default function Header() {
   }, [pushDL, phoneDigits]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-blue text-brand-white border-b border-white/10">
+    <header className="w-full bg-blue text-brand-white border-b border-white/10">
       <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-2.5">
         {/* linha 1: logo à esquerda / ações à direita */}
         <div className="flex items-center justify-between gap-3">
