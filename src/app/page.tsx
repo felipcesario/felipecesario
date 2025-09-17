@@ -1,11 +1,11 @@
 // src/app/page.tsx
-import Header from "@/components/layout/Header";
-import Intro from "@/components/sections/Intro";
-import Urgency from "@/components/sections/Urgency";
-import Depoimentos from "@/components/sections/Depoimentos";
+import Header from "@/components/sections/Criminal/Header";
+import Intro from "@/components/sections/Criminal/Intro";
+import Urgency from "@/components/sections/Criminal/Urgency";
+import Depoimentos from "@/components/sections/Criminal/Depoimentos";
 import Footer from "@/components/layout/Footer";
-import Contato from "@/components/sections/Contato";
-import Authority from "@/components/sections/Sobre";
+import Contato from "@/components/sections/Criminal/Contato";
+import Authority from "@/components/sections/Criminal/Sobre";
 
 export default function Home() {
   return (
