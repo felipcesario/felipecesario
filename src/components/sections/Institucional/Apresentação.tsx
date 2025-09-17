@@ -9,7 +9,7 @@ export default function Apresentacao() {
   const headline = "Defesa Criminal estratégica e humanizada";
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
-  const photoUrl = "/img/felipe.jpg";
+  const photoUrl = "/img/felipe2.jpg";
   const whatsapp = "5599999999999"; 
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";
