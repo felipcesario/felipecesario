@@ -33,16 +33,10 @@ export default function Sobre() {
           <p className="text-sand/90 font-semibold mb-4">Felipe Cesario</p>
           <div className="space-y-4 text-brand-white/90 leading-relaxed text-sm sm:text-base">
             <p>
-              Sou advogado especializado em Direito Criminal, com atuação em
-              casos de grande complexidade. Meu compromisso é oferecer uma
-              defesa estratégica, técnica e humanizada, sempre priorizando o
-              respeito e a clareza na comunicação.
+              Advogado formado há dez anos pelo renomado Centro Universitário Antonio Eufrásio de Toledo, em Presidente Prudente/SP. Ao longo da minha trajetória, mantive constante atualização na área da advocacia criminal, atuando em casos que vão desde situações mais simples até processos de maior complexidade.
             </p>
             <p>
-              Ao longo da minha trajetória, desenvolvi um trabalho focado em
-              resultados e no cuidado com cada detalhe do processo, garantindo
-              que cada cliente tenha sua voz ouvida e sua defesa construída com
-              dedicação total.
+              Sou especialista em Direito Penal e Processo Penal, com foco na Lei de Drogas e no Direito Penal Estratégico, áreas em que defendo a ideia de que a atuação da defesa vai além de um direito constitucional, sendo um pilar essencial da justiça. Atuo em todo o Brasil, com sede em Florianópolis/SC, e integro a ABRACRIM, a AACRIMESC e as Comissões da OAB/SC de Política de Drogas e Assuntos Prisionais. Para mim, cada caso representa uma vida e uma história única, que exige seriedade, técnica e dedicação absoluta.
             </p>
           </div>
           <div className="mt-6 rounded-lg border border-white/10 bg-white/5 px-5 py-4 text-sm sm:text-base text-brand-white/90 italic">
