@@ -15,7 +15,6 @@ type Service = {
 
 type Props = {
   sectionId?: string;
-  years?: number | string; // "X" anos
   lawyerName: string;
   oab: string;             // ex: "OAB/PR 123456"
   photoUrl: string;
@@ -23,7 +22,6 @@ type Props = {
 
 export default function Authority({
   sectionId = "autoridade",
-  years = "X",
   lawyerName,
   oab,
   photoUrl,

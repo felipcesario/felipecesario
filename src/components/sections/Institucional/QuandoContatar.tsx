@@ -1,4 +1,4 @@
-// src/components/sections/QuandoContatar.tsx
+// src/components/sections/Institucional/QuandoContatar.tsx
 "use client";
 
 import Image from "next/image";
@@ -85,7 +85,7 @@ export default function QuandoContatar({
       className="relative w-full bg-brand-white text-blue"
       aria-label={heading}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 py-10 sm:py-12 md:py-14 lg:py-18">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 py-10 sm:py-12 md:py-14">
         {/* Título */}
         <div className="text-center mb-6 sm:mb-8 md:mb-10">
           <h2 className="font-serif text-[clamp(1.7rem,5vw,2.6rem)] font-bold">
@@ -210,10 +210,7 @@ function ChildNode({ item }: { item: NodeItem }) {
           className="object-cover"
         />
       </div>
-      <p
-        className="mx-auto text-[15px] sm:text-[15.5px] md:text-base leading-[1.6] text-blue/80 text-center text-balance max-w-[26ch] sm:max-w-[28ch] md:max-w-[30ch]"
-        style={{ textWrap: "pretty", hyphens: "auto" as any }}
-      >
+      <p className="mx-auto text-[15px] sm:text-[15.5px] md:text-base leading-[1.6] text-blue/80 text-center text-balance text-pretty hyphens-auto max-w-[26ch] sm:max-w-[28ch] md:max-w-[30ch]">
         {item.description}
       </p>
     </article>
