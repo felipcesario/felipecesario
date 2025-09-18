@@ -19,7 +19,6 @@ export default function Home() {
 
       <Authority
         sectionId="autoridade"
-        years={1}
         lawyerName="Felipe Cesario"
         oab="OAB/SC N° 71.088"
         photoUrl="/img/felipe2.jpg"
