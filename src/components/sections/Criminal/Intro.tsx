@@ -174,7 +174,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
           </h1>
 
           <p className="mt-3 max-w-lg text-sm/relaxed text-brand-white/90 sm:text-base/relaxed text-center md:text-left">
-            Atuação imediata em casos de prisão em flagrante, audiências de custódia e urgências criminais.
+            Atuação imediata em casos de prisão em flagrante, audiências de custódia, habeas corpus liberatório e urgências criminais.
           </p>
 
           <div className="mt-6 w-full max-w-md sm:max-w-md md:max-w-lg mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
