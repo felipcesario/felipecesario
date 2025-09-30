@@ -40,9 +40,8 @@ export default function Authority({
     { id: "defesa", title: "Defesa Criminal", icon: <FaScaleBalanced className="size-7" aria-hidden="true" />, description: "Atuação técnica e especializada em todas as fases do processo." },
     { id: "recursos", title: "Recursos e Apelações", icon: <FaGavel className="size-7" aria-hidden="true" />, description: "Atuação em instâncias superiores com precisão." },
 
-    // novos
     { id: "lei-drogas", title: "Lei de Drogas", icon: <FaPeopleGroup className="size-7" aria-hidden="true" />, description: "Casos envolvendo a Lei de Drogas com foco nas garantias individuais." },
-    { id: "hc-cultivo-medicinal", title: "HC p/ Cultivo Medicinal", icon: <FaLeaf className="size-7" aria-hidden="true" />, description: "Habeas corpus preventivo/repressivo para cultivo medicinal regular." },
+    { id: "hc-cultivo-medicinal", title: "HC p/ Cultivo Medicinal", icon: <FaLeaf className="size-7" aria-hidden="true" />, description: "Habeas corpus preventivo para cultivo medicinal regular." },
     { id: "associacoes-cultivo", title: "Associações p/ Cultivo", icon: <FaBuilding className="size-7" aria-hidden="true" />, description: "Criação e regularização de associações sem fins lucrativos para pacientes." },
     { id: "empresas-sementes", title: "Empresas & Bancos de Sementes", icon: <FaFileInvoiceDollar className="size-7" aria-hidden="true" />, description: "Compliance, contratos e regularização para empresas do setor." },
   ];

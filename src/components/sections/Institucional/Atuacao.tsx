@@ -112,30 +112,58 @@ export default function Atuacao() {
         {
           id: "flagrante",
           title: "Flagrante e Prisões",
-          image: "/img/atuacao/criminal-inquerito.png",
+          image: "/img/flagrante.jpg",
           description:
             "Atuação imediata em delegacias e audiências de custódia, buscando liberdade provisória, fiança ou medidas alternativas à prisão.",
         },
         {
           id: "habeascorpus",
           title: "Habeas Corpus",
-          image: "/img/atuacao/criminal-custodia.png",
+          image: "/img/hc.jpg",
           description:
             "Medidas urgentes para garantir a liberdade em casos de prisão ilegal ou abuso de autoridade, com fundamentação rápida e precisa.",
         },
         {
           id: "defesa",
           title: "Defesa Criminal",
-          image: "/img/atuacao/criminal-patrimonio.png",
+          image: "/img/defesa.jpg",
           description:
             "Atuação especializada em crimes patrimoniais, contra a vida e outros, com estratégias voltadas à absolvição ou redução de penas.",
         },
         {
           id: "recursos",
           title: "Recursos e Apelações",
-          image: "/img/atuacao/criminal-transito.png",
+          image: "/img/recursos.jpg",
           description:
             "Elaboração e acompanhamento de recursos em instâncias superiores, buscando reverter decisões ou reduzir penalidades.",
+        },
+        {
+          id: "leidrogas",
+          title: "Lei de Drogas",
+          image: "/img/leidedrogas.jpg",
+          description:
+            "Casos envolvendo a Lei de Drogas com foco nas garantias individuais.",
+        },
+        {
+          id: "cultivo",
+          title: "Cultivo Medicinal",
+          image: "/img/cultivo.jpg",
+          description:
+            "Habeas corpus preventivo para cultivo medicinal regular.",
+        },
+        {
+          id: "associacoes",
+          title: "Associações p/ Cultivo",
+          image: "/img/associacoes.jpg",
+          description:
+            "Criação e regularização de associações sem fins lucrativos para pacientes.",
+        },
+        {
+          id: "empresas",
+          title: "Empresas & Bancos de Sementes",
+          image: "/img/empresas.jpg",
+          description:
+            "Compliance, contratos e regularização para empresas do setor.",
         },
       ],
     },
