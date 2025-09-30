@@ -12,7 +12,7 @@ type Tema = {
 };
 
 type Area = {
-  id: "civil" | "familiar";
+  id: "civil" | "familiar" | "criminal";
   title: string;
   image: string;
   description: string;
@@ -26,58 +26,116 @@ export default function Atuacao() {
       title: "Civil",
       image: "/img/direitocivil.png",
       description:
-        "Atuação técnica e personalizada em demandas cíveis: contratos, responsabilidade civil e disputas patrimoniais — com foco em solução eficiente e segura.",
+        "Atuação técnica, personalizada e estratégica em demandas cíveis, sempre com foco em soluções seguras, eficazes e alinhadas aos interesses do cliente. Nosso objetivo é proteger seus direitos, prevenir litígios e buscar a reparação devida, com eficiência e clareza.",
       temas: [
         {
           id: "contratos",
           title: "Revisão e Elaboração de Contratos",
           image: "/img/atuacao.png",
           description:
-            "Análise de cláusulas, mitigação de riscos e redação sob medida para proteger seus interesses.",
+            "Contratos sob medida, redigidos de forma clara e segura, evitando riscos e protegendo seus interesses em relações pessoais e empresariais.",
         },
         {
           id: "reparacao",
-          title: "Reparação de Danos",
+          title: "Indenizações e Reparação de Danos",
           image: "/img/reparacao.png",
           description:
-            "Ações de indenização por danos materiais e morais, com estratégia probatória clara.",
+            "Atuação em ações de danos materiais, morais e estéticos, com estratégias jurídicas sólidas para garantir a compensação justa.",
         },
         {
-          id: "servico3",
-          title: "Serviço 3",
-          image: "/img/atuacao/civil-servico3.png",
+          id: "recuperacao",
+          title: "Cobranças e Recuperação de Créditos",
+          image: "/img/credito.jpg",
           description:
-            "Outro serviço civil relevante (personalizável) alinhado ao seu caso concreto.",
+            "Ações judiciais e extrajudiciais para recuperação de valores, priorizando agilidade e eficácia no retorno financeiro.",
+        },
+        {
+          id: "responsabilidade",
+          title: "Responsabilidade Civil e Seguros",
+          image: "/img/responsabilidade.jpg",
+          description:
+            "Defesa em casos de acidentes, contratos de seguro e responsabilidade profissional, buscando indenizações justas e proteção patrimonial.",
         },
       ],
     },
     {
       id: "familiar",
-      title: "Familiar",
+      title: "Familia",
       image: "/img/direitofamiliar.png",
       description:
-        "Apoio humano e estratégico em questões familiares: sucessões, partilhas e organização patrimonial com máxima sensibilidade e segurança jurídica.",
+        "Questões familiares exigem mais do que conhecimento jurídico: pedem sensibilidade, estratégia e segurança. Atuamos para transformar momentos delicados em soluções justas e eficazes, protegendo seu patrimônio, seus vínculos e seus direitos. Nosso compromisso é trazer tranquilidade em situações que, muitas vezes, envolvem grandes decisões e valores relevantes para o futuro da sua família.",
       temas: [
         {
           id: "inventario",
-          title: "Inventário",
+          title: "Inventário e Planejamento Sucessório",
           image: "/img/inventario.png",
           description:
-            "Condução de inventário judicial ou extrajudicial, com celeridade e regularidade fiscal.",
+            "Agilidade e segurança na condução de inventários judiciais e extrajudiciais, com atuação estratégica na partilha de bens e elaboração de testamentos. Nosso foco é reduzir custos e evitar conflitos familiares, garantindo proteção patrimonial e tranquilidade em todas as etapas do processo.",
         },
         {
           id: "sucessao",
-          title: "Sucessão / Partilha de Bens",
+          title: "Divórcio e Dissolução de União Estável",
           image: "/img/sucessao.png",
           description:
-            "Planejamento sucessório e partilha equilibrada, prevenindo conflitos entre herdeiros.",
+            "Atuação firme em divórcios consensuais ou litigiosos, com foco na divisão justa dos bens, guarda dos filhos e pensão alimentícia. Nosso objetivo é resolver com rapidez, proteção patrimonial e o mínimo de desgaste emocional.",
         },
         {
-          id: "servico3",
-          title: "Serviço 3",
-          image: "/img/atuacao/fam-servico3.png",
+          id: "guarda",
+          title: "Guarda, Convivência e Regulamentação de Visitas",
+          image: "/img/guarda.jpg",
           description:
-            "Outro serviço de família (personalizável) para necessidades específicas do seu caso.",
+            "Defesa técnica e humanizada para garantir o melhor interesse da criança. Atuamos em pedidos de guarda compartilhada, unilateral e regulamentação de visitas, sempre priorizando estabilidade e proteção familiar.",
+        },
+        {
+          id: "pensao",
+          title: "Pensão Alimentícia",
+          image: "/img/pensao.jpg",
+          description:
+            "Fixação, revisão ou exoneração de pensão alimentícia, com argumentos sólidos e visão equilibrada entre necessidade e possibilidade. Buscamos valores justos e sustentáveis para ambas as partes.",
+        },
+        {
+          id: "partilha",
+          title: "Partilha de Bens",
+          image: "/img/partilha.jpg",
+          description:
+            "Divisão patrimonial em divórcios, uniões estáveis ou falecimentos. Trabalhamos para que a partilha seja justa, equilibrada e realizada com rapidez, garantindo a preservação e valorização do patrimônio.",
+        },
+      ],
+    },
+    {
+      id: "criminal",
+      title: "Criminal",
+      image: "/img/direitocriminal.png",
+      description:
+        "Defesa técnica em todas as fases do processo penal, desde o inquérito policial até o Tribunal do Júri. Atuação ágil e estratégica para garantir direitos, liberdade e minimizar impactos pessoais e profissionais.",
+      temas: [
+        {
+          id: "flagrante",
+          title: "Flagrante e Prisões",
+          image: "/img/atuacao/criminal-inquerito.png",
+          description:
+            "Atuação imediata em delegacias e audiências de custódia, buscando liberdade provisória, fiança ou medidas alternativas à prisão.",
+        },
+        {
+          id: "habeascorpus",
+          title: "Habeas Corpus",
+          image: "/img/atuacao/criminal-custodia.png",
+          description:
+            "Medidas urgentes para garantir a liberdade em casos de prisão ilegal ou abuso de autoridade, com fundamentação rápida e precisa.",
+        },
+        {
+          id: "defesa",
+          title: "Defesa Criminal",
+          image: "/img/atuacao/criminal-patrimonio.png",
+          description:
+            "Atuação especializada em crimes patrimoniais, contra a vida e outros, com estratégias voltadas à absolvição ou redução de penas.",
+        },
+        {
+          id: "recursos",
+          title: "Recursos e Apelações",
+          image: "/img/atuacao/criminal-transito.png",
+          description:
+            "Elaboração e acompanhamento de recursos em instâncias superiores, buscando reverter decisões ou reduzir penalidades.",
         },
       ],
     },
@@ -171,7 +229,6 @@ export default function Atuacao() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.25 }}
-            // 1 coluna no mobile; 3 colunas no md (lado a lado); mantém 3 no lg
             className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4"
           >
             {active.temas.map((t) => (
@@ -179,7 +236,6 @@ export default function Atuacao() {
                 key={t.id}
                 className="group rounded-xl border border-blue/10 bg-white/60 backdrop-blur-sm p-4 md:p-3 hover:shadow-lg transition-shadow"
               >
-                {/* altura controlada por breakpoint p/ caber confortavelmente no md */}
                 <div className="relative w-full aspect-[4/3] md:aspect-[3/2] overflow-hidden rounded-lg mb-4 md:mb-3">
                   <Image
                     src={t.image}
@@ -193,7 +249,8 @@ export default function Atuacao() {
                 <h4 className="font-serif text-lg md:text-base font-bold mb-1 text-blue line-clamp-2">
                   {t.title}
                 </h4>
-                <p className="text-sm md:text-[13px] text-blue/80 leading-relaxed line-clamp-3">
+                {/* Aumentei o limite das descrições para evitar corte “na metade” */}
+                <p className="text-sm md:text-[13px] text-blue/80 leading-relaxed line-clamp-6 md:line-clamp-7 lg:line-clamp-none">
                   {t.description}
                 </p>
               </article>

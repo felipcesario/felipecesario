@@ -14,7 +14,7 @@ export default function Apresentacao() {
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";
   const secondaryCtaLabel = "Áreas de atuação";
-  const cityTag = "Atendimento em Curitiba";
+  const cityTag = "Atendimento 24h";
 
   const waHref = useMemo(() => {
     if (!whatsapp) return undefined;

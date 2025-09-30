@@ -41,7 +41,7 @@ function sendLeadBeacon(url: string, payload: unknown) {
 
 export default function Formulario() {
   const sectionId = "consultoria_civil";
-  const title = "Consultoria e Atendimento em Direito Civil e Empresarial";
+  const title = "Consultoria e Atendimento em Direito Civil, Familiar e Criminal";
   const subtitle = "Análise de contratos, prevenção de riscos, cobranças, indenizações e consultoria estratégica para pessoas e empresas.";
 
   const formId = "civil_empresarial_form";
