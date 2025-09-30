@@ -149,7 +149,7 @@ export default function Atuacao() {
           title: "Cultivo Medicinal",
           image: "/img/cultivo.jpg",
           description:
-            "Habeas corpus preventivo para cultivo medicinal regular.",
+            "Habeas Corpus preventivo para cultivo de cannab!s Medicinal.",
         },
         {
           id: "associacoes",

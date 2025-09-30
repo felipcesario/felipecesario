@@ -11,12 +11,10 @@ type Props = {
   cityTag?: string;
 };
 
-// helpers locais (apenas visual no input)
 function onlyDigits(v: string) {
   return v.replace(/\D+/g, "");
 }
 
-// Formata parcialmente conforme digita (XX) XXXXX-XXXX
 function formatPhoneBR(digits: string) {
   const dd = digits.slice(0, 11); // limita a 11 (DDD + 9)
   const len = dd.length;
@@ -27,7 +25,6 @@ function formatPhoneBR(digits: string) {
   return `(${dd.slice(0, 2)}) ${dd.slice(2, 7)}-${dd.slice(7)}`;
 }
 
-// tipagem segura para sendBeacon (sem any)
 type NavigatorWithBeacon = Navigator & {
   sendBeacon?: (url: string | URL, data?: BodyInit) => boolean;
 };
@@ -173,11 +170,11 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 px-4 py-10 sm:px-6 sm:py-14 md:py-20">
         <div className="order-1 md:order-1 flex flex-col justify-center md:pl-4 lg:pl-10">
           <h1 className="font-serif text-[clamp(1.4rem,5vw,2.4rem)] leading-snug font-bold text-white text-center md:text-left">
-            Preso em flagrante? Precisa de um advogado AGORA?
+            Precisa de um advogado criminalista agora? Atendimento 24h
           </h1>
 
           <p className="mt-3 max-w-lg text-sm/relaxed text-brand-white/90 sm:text-base/relaxed text-center md:text-left">
-            Atendimento para prisões em flagrante, audiências de custódia e casos urgentes.
+            Atuação imediata em casos de prisão em flagrante, audiências de custódia e urgências criminais.
           </p>
 
           <div className="mt-6 w-full max-w-md sm:max-w-md md:max-w-lg mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
@@ -210,7 +207,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
               <button
                 type="submit"
                 disabled={isSending}
-                className="w-full rounded-md bg-red-600 px-5 py-3 sm:py-4 font-bold text-white transition-transform hover:scale-[1.01] hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60"
+                className="w-full rounded-md bg-green-600 px-5 py-3 sm:py-4 font-bold text-white transition-transform hover:scale-[1.01] hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60"
                 aria-live="polite"
               >
                 {isSending ? "Enviando..." : "Falar com Advogado"}
