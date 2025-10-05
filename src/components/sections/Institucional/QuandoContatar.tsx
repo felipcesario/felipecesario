@@ -123,10 +123,12 @@ export default function QuandoContatar({
       className="relative w-full bg-brand-white text-blue"
       aria-label={heading}
     >
+      {/* brilho superior */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 -top-1 h-1 bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-80"
       />
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 py-10 sm:py-12 lg:py-14">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="font-serif text-[clamp(1.55rem,4vw,2.1rem)] leading-tight">
@@ -137,20 +139,50 @@ export default function QuandoContatar({
           ) : null}
         </div>
 
-        <div className="relative">
-          {/* linha central */}
+        {/* ======== ÁREA ROLÁVEL NO MOBILE / GRADE NO DESKTOP ======== */}
+        <div
+          className="
+            relative
+            -mx-4 px-4  /* usa a tela inteira no mobile */
+            overflow-x-auto md:overflow-visible
+            scroll-smooth
+            snap-x snap-mandatory md:snap-none
+            pb-2
+          "
+          aria-label="linha com situações para contato"
+        >
+          {/* linha central que acompanha o conteúdo rolável */}
           <div
             aria-hidden
             className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-sand/70"
           />
 
           {/* nós */}
-          <ul className="relative grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-4 sm:gap-6 lg:gap-7">
+          <ul
+            role="list"
+            aria-orientation="horizontal"
+            className="
+              relative
+              grid
+              /* mobile: itens em colunas horizontais (rolando para o lado) */
+              grid-flow-col auto-cols-[minmax(240px,1fr)]
+              gap-4 sm:gap-5
+              /* desktop: grade tradicional, sem scroll lateral */
+              md:grid-flow-row md:auto-cols-auto
+              md:grid-cols-3 lg:grid-cols-7
+            "
+          >
             {items.map((item, idx) => {
               const isTop = idx % 2 === 0;
               const Icon = getIconFor(item.title || item.id);
               return (
-                <li key={item.id} className="relative flex flex-col items-center">
+                <li
+                  key={item.id}
+                  className="
+                    relative flex flex-col items-center
+                    snap-center
+                  "
+                >
                   {/* card topo */}
                   {isTop && (
                     <Card
@@ -162,13 +194,15 @@ export default function QuandoContatar({
 
                   {/* conector */}
                   {isTop && (
-                    <span aria-hidden className="h-4 w-[2px] bg-sand/80 -mb-0.5" />
+                    <span
+                      aria-hidden
+                      className="h-4 w-[2px] bg-sand/80 -mb-0.5"
+                    />
                   )}
 
                   {/* círculo fixo; só o ícone muda de tamanho */}
                   <div className="relative grid place-items-center h-16 w-16 sm:h-[66px] sm:w-[66px] lg:h-[70px] lg:w-[70px] rounded-full bg-blue/95 ring-1 ring-white/15 shadow-[0_16px_36px_-16px_rgba(0,0,0,0.45)]">
                     <div className="absolute inset-[3px] rounded-full bg-blue/90 ring-1 ring-white/10" />
-                    {/* Ícone FA — **menor** para dar mais respiro */}
                     <Icon className="relative h-[36px] w-[36px] sm:h-[38px] sm:w-[38px] lg:h-[42px] lg:w-[42px] text-brand-white" />
                     <span
                       aria-hidden
@@ -178,7 +212,10 @@ export default function QuandoContatar({
 
                   {/* conector */}
                   {!isTop && (
-                    <span aria-hidden className="h-4 w-[2px] bg-sand/80 mt-0.5" />
+                    <span
+                      aria-hidden
+                      className="h-4 w-[2px] bg-sand/80 mt-0.5"
+                    />
                   )}
 
                   {/* card base */}
