@@ -22,6 +22,71 @@ type Area = {
 export default function Atuacao() {
   const areas: Area[] = [
     {
+      id: "criminal",
+      title: "Criminal",
+      image: "/img/direitocriminal.png",
+      description:
+        "Defesa técnica, humanizada e estratégica em todas as fases do processo penal, desde o inquérito policial até instâncias superiores, atuando também em processos de tribunais do Juri. Atuação ágil, eficaz e estratégica para garantir direitos, liberdade, e minimizar impactos pessoais.",
+      temas: [
+        {
+          id: "flagrante",
+          title: "Flagrante e Prisões",
+          image: "/img/flagrante.jpg",
+          description:
+            "Atuação imediata em delegacias e audiências de custódia, buscando liberdade provisória, fiança ou medidas alternativas à prisão.",
+        },
+        {
+          id: "habeascorpus",
+          title: "Habeas Corpus",
+          image: "/img/hc.jpg",
+          description:
+            "Medidas urgentes para garantir ou previnir a liberdade em casos de prisões ilegais, ou qualquer outro ato de ilegalidade, com fundamentação precisa e estratégica.",
+        },
+        {
+          id: "defesa",
+          title: "Defesa Criminal",
+          image: "/img/defesa.jpg",
+          description:
+            "Atuação especializada em crimes patrimoniais, contra a vida e outros, com estratégias voltadas à absolvição ou redução de penas.",
+        },
+        {
+          id: "recursos",
+          title: "Recursos e Apelações",
+          image: "/img/recursos.jpg",
+          description:
+            "Elaboração e acompanhamento de recursos em instâncias superiores, buscando reverter decisões ou reduzir penalidades.",
+        },
+        {
+          id: "leidrogas",
+          title: "Lei de Drogas",
+          image: "/img/leidedrogas.jpeg",
+          description:
+            "Casos envolvendo a Lei de Drogas com foco nas garantias individuais.",
+        },
+        {
+          id: "cultivo",
+          title: "Cultivo Medicinal",
+          image: "/img/cultivo.jpg",
+          description:
+            "Habeas Corpus preventivo para cultivo de cannab!s Medicinal.",
+        },
+        {
+          id: "associacoes",
+          title: "Associações p/ Cultivo",
+          image: "/img/associacoes.jpg",
+          description:
+            "Criação e regularização de associações sem fins lucrativos para pacientes.",
+        },
+        {
+          id: "empresas",
+          title: "Empresas & Bancos de Sementes",
+          image: "/img/empresas.jpeg",
+          description:
+            "Compliance, contratos e regularização para empresas do setor.",
+        },
+      ],
+    },
+    {
       id: "civil",
       title: "Civil",
       image: "/img/direitocivil.png",
@@ -89,7 +154,7 @@ export default function Atuacao() {
         {
           id: "pensao",
           title: "Pensão Alimentícia",
-          image: "/img/pensao.jpg",
+          image: "/img/pensao.jpeg",
           description:
             "Fixação, revisão ou exoneração de pensão alimentícia, com argumentos sólidos e visão equilibrada entre necessidade e possibilidade. Buscamos valores justos e sustentáveis para ambas as partes.",
         },
@@ -102,71 +167,7 @@ export default function Atuacao() {
         },
       ],
     },
-    {
-      id: "criminal",
-      title: "Criminal",
-      image: "/img/direitocriminal.png",
-      description:
-        "Defesa técnica em todas as fases do processo penal, desde o inquérito policial até o Tribunal do Júri. Atuação ágil e estratégica para garantir direitos, liberdade e minimizar impactos pessoais e profissionais.",
-      temas: [
-        {
-          id: "flagrante",
-          title: "Flagrante e Prisões",
-          image: "/img/flagrante.jpg",
-          description:
-            "Atuação imediata em delegacias e audiências de custódia, buscando liberdade provisória, fiança ou medidas alternativas à prisão.",
-        },
-        {
-          id: "habeascorpus",
-          title: "Habeas Corpus",
-          image: "/img/hc.jpg",
-          description:
-            "Medidas urgentes para garantir a liberdade em casos de prisão ilegal ou abuso de autoridade, com fundamentação rápida e precisa.",
-        },
-        {
-          id: "defesa",
-          title: "Defesa Criminal",
-          image: "/img/defesa.jpg",
-          description:
-            "Atuação especializada em crimes patrimoniais, contra a vida e outros, com estratégias voltadas à absolvição ou redução de penas.",
-        },
-        {
-          id: "recursos",
-          title: "Recursos e Apelações",
-          image: "/img/recursos.jpg",
-          description:
-            "Elaboração e acompanhamento de recursos em instâncias superiores, buscando reverter decisões ou reduzir penalidades.",
-        },
-        {
-          id: "leidrogas",
-          title: "Lei de Drogas",
-          image: "/img/leidedrogas.jpg",
-          description:
-            "Casos envolvendo a Lei de Drogas com foco nas garantias individuais.",
-        },
-        {
-          id: "cultivo",
-          title: "Cultivo Medicinal",
-          image: "/img/cultivo.jpg",
-          description:
-            "Habeas Corpus preventivo para cultivo de cannab!s Medicinal.",
-        },
-        {
-          id: "associacoes",
-          title: "Associações p/ Cultivo",
-          image: "/img/associacoes.jpg",
-          description:
-            "Criação e regularização de associações sem fins lucrativos para pacientes.",
-        },
-        {
-          id: "empresas",
-          title: "Empresas & Bancos de Sementes",
-          image: "/img/empresas.jpg",
-          description:
-            "Compliance, contratos e regularização para empresas do setor.",
-        },
-      ],
-    },
+    
   ];
 
   const [activeId, setActiveId] = useState<Area["id"]>(areas[0].id);

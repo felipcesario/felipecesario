@@ -41,8 +41,8 @@ function sendLeadBeacon(url: string, payload: unknown) {
 
 export default function Formulario() {
   const sectionId = "consultoria_civil";
-  const title = "Consultoria e Atendimento em Direito Civil, Familiar e Criminal";
-  const subtitle = "Análise de contratos, prevenção de riscos, cobranças, indenizações e consultoria estratégica para pessoas e empresas.";
+  const title = "Consultoria e Atendimento Jurídico em Direito Criminal, Civil e Família";
+  const subtitle = "Análise processual, contratual, elaboração de pareceres, acompanhamento processual do início ao fim e consultoria jurídica estratégica para pessoas e empresas.";
 
   const formId = "civil_empresarial_form";
   const sectionPath = useMemo(() => {
@@ -136,14 +136,6 @@ export default function Formulario() {
     "transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-sand/60 " +
     "min-h-[56px] sm:min-h-[64px]";
 
-  const itens = [
-    "Análise e elaboração de contratos",
-    "Cobranças e execuções",
-    "Indenizações por danos",
-    "Direito do consumidor",
-    "Consultoria para empresas (compliance e riscos)",
-  ];
-
   return (
     <section
       id={sectionId}
@@ -164,17 +156,6 @@ export default function Formulario() {
             <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-brand-white/85 max-w-2xl">
               {subtitle}
             </p>
-
-            <ul className="mt-5 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {itens.map((label) => (
-                <li key={label}>
-                  <button type="button" className={tileClass}>
-                    <span className="h-2 w-2 rounded-full bg-blue/70 shrink-0" aria-hidden="true" />
-                    <span className="leading-snug text-left">{label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Formulário */}
@@ -250,7 +231,7 @@ export default function Formulario() {
                 <button
                   type="submit"
                   disabled={isSending}
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-sand px-5 py-3 text-base font-bold text-blue shadow-[0_10px_24px_rgba(185,162,119,0.35)] transition hover:brightness-95 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-sand/60 focus:ring-offset-2 focus:ring-offset-brand-white disabled:opacity-60"
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-3 text-base font-bold text-white shadow-[0_10px_24px_rgba(185,162,119,0.35)] transition hover:brightness-95 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-sand/60 focus:ring-offset-2 focus:ring-offset-brand-white disabled:opacity-60"
                   aria-live="polite"
                 >
                   {isSending ? "Enviando…" : "Falar no WhatsApp"}

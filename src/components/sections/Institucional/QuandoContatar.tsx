@@ -1,13 +1,22 @@
 // src/components/sections/Institucional/QuandoContatar.tsx
 "use client";
 
-import Image from "next/image";
+import {
+  FaScaleBalanced,
+  FaGavel,
+  FaFileContract,
+  FaHouseChimney,
+  FaShieldHalved,
+  FaUsers,
+  FaHandshake,
+  FaFileSignature,
+} from "react-icons/fa6";
 
 type NodeItem = {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image?: string; // compat
 };
 
 type Parent = NodeItem & { children?: NodeItem[] };
@@ -23,55 +32,82 @@ const defaultData: Parent[] = [
   {
     id: "tema1",
     title: "Conflitos de Família",
-    description: "",
-    image: "/img/logo5.png",
+    description: "Atuação preventiva e orientação antes de litígios.",
     children: [
       {
         id: "familia-sub",
-        title: "",
+        title: "Consultoria & Acordos",
         description: "Divórcio, guarda de filhos e pensão alimentícia.",
-        image: "/img/logo6.png",
       },
     ],
   },
   {
     id: "tema2",
     title: "Questões Patrimoniais e Contratuais",
-    description: "",
-    image: "/img/logo2.png",
+    description: "Atuação em contratos e obrigações.",
     children: [
       {
         id: "contratos",
-        title: "",
+        title: "Contratos & Dívidas",
         description:
-          "Contratos de compra e venda, locação, prestação de serviços, dívidas.",
-        image: "/img/logo3.png",
+          "Compra e venda, locação, prestação de serviços e cobranças.",
       },
       {
         id: "propriedade-posse",
-        title: "",
+        title: "Propriedade & Posse",
         description:
-          "Propriedade e Posse (usucapião, vizinhança, desapropriação, partilha de bens).",
-        image: "/img/logo4.png",
+          "Usucapião, vizinhança, desapropriação e partilha de bens.",
       },
     ],
   },
   {
     id: "tema3",
     title: "Responsabilidade Civil",
-    description: "",
-    image: "/img/logo7.png",
+    description: "Indenizações por danos materiais e morais.",
     children: [
       {
         id: "indenizacao",
-        title: "",
+        title: "Danos & Reparações",
         description:
-          "Acidentes, ofensas, prejuízos em relações civis (danos materiais e morais).",
-        image: "/img/logo8.png",
+          "Acidentes, ofensas e prejuízos nas relações civis (danos materiais e morais).",
       },
     ],
   },
 ];
+
+/** Lineariza: pai -> filhos -> próximo pai */
+function toSequence(parents: Parent[]): NodeItem[] {
+  const seq: NodeItem[] = [];
+  parents.forEach((p) => {
+    seq.push({ id: p.id, title: p.title, description: p.description ?? "" });
+    (p.children ?? []).forEach((c) =>
+      seq.push({
+        id: c.id,
+        title: c.title ?? "",
+        description: c.description,
+      })
+    );
+  });
+  return seq;
+}
+
+/** Ícones únicos por tema (sem repetição) */
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  // pais
+  "conflitos de família": FaUsers,
+  "questões patrimoniais e contratuais": FaScaleBalanced,
+  "responsabilidade civil": FaShieldHalved,
+  // filhos
+  "consultoria & acordos": FaHandshake,
+  "contratos & dívidas": FaFileContract,
+  "propriedade & posse": FaHouseChimney,
+  "danos & reparações": FaGavel,
+};
+
+function getIconFor(text: string) {
+  const key = text.trim().toLowerCase();
+  return iconMap[key] || FaFileSignature; // fallback diferente para não repetir
+}
 
 export default function QuandoContatar({
   sectionId = "quando-contatar",
@@ -79,140 +115,124 @@ export default function QuandoContatar({
   subheading,
   parents = defaultData,
 }: Props) {
+  const items = toSequence(parents);
+
   return (
     <section
       id={sectionId}
       className="relative w-full bg-brand-white text-blue"
       aria-label={heading}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 py-10 sm:py-12 md:py-14">
-        {/* Título */}
-        <div className="text-center mb-6 sm:mb-8 md:mb-10">
-          <h2 className="font-serif text-[clamp(1.7rem,5vw,2.6rem)] font-bold">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -top-1 h-1 bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-80"
+      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 py-10 sm:py-12 lg:py-14">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="font-serif text-[clamp(1.55rem,4vw,2.1rem)] leading-tight">
             {heading}
           </h2>
           {subheading ? (
-            <p className="mt-2 text-blue/80">{subheading}</p>
+            <p className="mt-2 text-blue/80 text-[14.5px]">{subheading}</p>
           ) : null}
         </div>
 
-        {/* ===== MOBILE/TABLET (lg:hidden): tema + conectores + subtemas ===== */}
-        <div className="lg:hidden space-y-10 sm:space-y-12">
-          {parents.map((p) => (
-            <article key={p.id} className="text-center">
-              <ParentNode item={p} />
-              {/* conector vertical + losango (mobile/tablet) */}
-              {p.children?.length ? (
-                <>
-                  <div
-                    aria-hidden
-                    className="mx-auto mt-2 h-6 sm:h-7 w-px bg-sand"
-                  />
-                  <div
-                    aria-hidden
-                    className="mx-auto my-2 w-3 h-3 rotate-45 bg-sand"
-                  />
-                </>
-              ) : null}
+        <div className="relative">
+          {/* linha central */}
+          <div
+            aria-hidden
+            className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-sand/70"
+          />
 
-              <div
-                className={`mt-2 grid justify-items-center gap-6 ${
-                  (p.children?.length || 0) > 1
-                    ? "grid-cols-1 sm:grid-cols-2"
-                    : "grid-cols-1"
-                }`}
-              >
-                {p.children?.map((c) => (
-                  <ChildNode key={c.id} item={c} />
-                ))}
-              </div>
-            </article>
-          ))}
+          {/* nós */}
+          <ul className="relative grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-4 sm:gap-6 lg:gap-7">
+            {items.map((item, idx) => {
+              const isTop = idx % 2 === 0;
+              const Icon = getIconFor(item.title || item.id);
+              return (
+                <li key={item.id} className="relative flex flex-col items-center">
+                  {/* card topo */}
+                  {isTop && (
+                    <Card
+                      title={item.title}
+                      description={item.description}
+                      position="top"
+                    />
+                  )}
+
+                  {/* conector */}
+                  {isTop && (
+                    <span aria-hidden className="h-4 w-[2px] bg-sand/80 -mb-0.5" />
+                  )}
+
+                  {/* círculo fixo; só o ícone muda de tamanho */}
+                  <div className="relative grid place-items-center h-16 w-16 sm:h-[66px] sm:w-[66px] lg:h-[70px] lg:w-[70px] rounded-full bg-blue/95 ring-1 ring-white/15 shadow-[0_16px_36px_-16px_rgba(0,0,0,0.45)]">
+                    <div className="absolute inset-[3px] rounded-full bg-blue/90 ring-1 ring-white/10" />
+                    {/* Ícone FA — **menor** para dar mais respiro */}
+                    <Icon className="relative h-[36px] w-[36px] sm:h-[38px] sm:w-[38px] lg:h-[42px] lg:w-[42px] text-brand-white" />
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-sand/40"
+                    />
+                  </div>
+
+                  {/* conector */}
+                  {!isTop && (
+                    <span aria-hidden className="h-4 w-[2px] bg-sand/80 mt-0.5" />
+                  )}
+
+                  {/* card base */}
+                  {!isTop && (
+                    <Card
+                      title={item.title}
+                      description={item.description}
+                      position="bottom"
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
-
-        {/* ===== DESKTOP (lg+): árvore em duas linhas alinhadas por colunas ===== */}
-        <div className="hidden lg:block">
-          {/* Linha superior: Temas */}
-          <div className="grid grid-cols-3 gap-10">
-            {parents.map((p) => (
-              <div key={p.id} className="relative flex flex-col items-center">
-                <ParentNode item={p} />
-                {p.children?.length ? (
-                  <div aria-hidden className="relative h-8 w-px bg-sand mt-4" />
-                ) : null}
-              </div>
-            ))}
-          </div>
-
-          {/* Linha inferior: Subtemas alinhados */}
-          <div className="mt-10 grid grid-cols-3 gap-10">
-            {parents.map((p) => (
-              <div key={`${p.id}-children`} className="relative pt-4">
-                {p.children?.length ? (
-                  <div
-                    aria-hidden
-                    className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-sand"
-                  />
-                ) : null}
-                <div
-                  className={`grid justify-items-center gap-6 ${
-                    (p.children?.length || 0) > 1 ? "grid-cols-2" : "grid-cols-1"
-                  }`}
-                >
-                  {p.children?.map((c) => (
-                    <ChildNode key={c.id} item={c} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* ===== /DESKTOP ===== */}
       </div>
     </section>
   );
 }
 
-/* ====== Nós (UI) ====== */
+/* ======================= UI PARTS ======================= */
 
-function ParentNode({ item }: { item: NodeItem }) {
+function Card({
+  title,
+  description,
+  position,
+}: {
+  title?: string;
+  description?: string;
+  position: "top" | "bottom";
+}) {
   return (
-    <article className="w-full max-w-[520px] mx-auto text-center">
-      {/* ícone do tema: 64px (xs), 80px (sm+), 96px (lg+) */}
-      <div className="relative mx-auto mb-4 sm:mb-5 h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 rounded-full overflow-hidden">
-        <Image
-          src={item.image}
-          alt={item.title}
-          fill
-          sizes="(min-width:1024px) 96px, (min-width:640px) 80px, 64px"
-          className="object-cover"
-        />
-      </div>
-      <h3 className="font-serif text-lg sm:text-xl md:text-2xl font-bold leading-tight">
-        {item.title}
-      </h3>
-    </article>
-  );
-}
-
-function ChildNode({ item }: { item: NodeItem }) {
-  return (
-    <article className="w-full max-w-[380px] sm:max-w-[340px] text-center">
-      {/* conector acima do subtema (apenas mobile/tablet) */}
-      <div aria-hidden className="block lg:hidden mx-auto mb-2 h-5 w-px bg-sand" />
-      {/* ícone do subtema: 64px (xs), 80px (lg) */}
-      <div className="relative mx-auto mb-2.5 sm:mb-3 h-16 w-16 lg:h-20 lg:w-20 rounded-full overflow-hidden">
-        <Image
-          src={item.image}
-          alt="" // decorativo
-          fill
-          sizes="(min-width:1024px) 80px, 64px"
-          className="object-cover"
-        />
-      </div>
-      <p className="mx-auto text-[15px] sm:text-[15.5px] md:text-base leading-[1.6] text-blue/80 text-center text-balance text-pretty hyphens-auto max-w-[26ch] sm:max-w-[28ch] md:max-w-[30ch]">
-        {item.description}
-      </p>
-    </article>
+    <div
+      className={[
+        "w-full max-w-[236px] sm:max-w-[252px] lg:max-w-[272px]",
+        "rounded-xl border border-blue/10 bg-white/80 backdrop-blur-[2px]",
+        "shadow-[0_18px_50px_-30px_rgba(0,0,0,0.33)]",
+        "px-4 py-3 sm:px-5 sm:py-4 text-center",
+        position === "top" ? "mb-2 sm:mb-3" : "mt-2 sm:mt-3",
+      ].join(" ")}
+    >
+      {title ? (
+        <h3
+          className="mx-auto font-serif text-[0.95rem] sm:text-[1rem] leading-[1.22] text-sand text-balance max-w-[16ch]"
+          title={title}
+        >
+          {title}
+        </h3>
+      ) : null}
+      {description ? (
+        <p className="mt-1.5 text-[13.5px] sm:text-[13.8px] leading-[1.5] text-blue/80 text-pretty">
+          {description}
+        </p>
+      ) : null}
+    </div>
   );
 }

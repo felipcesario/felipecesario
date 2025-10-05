@@ -46,15 +46,14 @@ export default function Sobre() {
               Lei de Drogas e no Direito Penal Estratégico, áreas em que defendo
               a ideia de que a atuação da defesa vai além de um direito
               constitucional, sendo um pilar essencial da justiça. Atuo em todo
-              o Brasil, com sede em Florianópolis/SC, e integro a ABRACRIM, a
+              o Brasil, com sede em Florianópolis/SC, integro a ABRACRIM, a
               AACRIMESC e as Comissões da OAB/SC de Política de Drogas e
               Assuntos Prisionais. Para mim, cada caso representa uma vida e uma
               história única, que exige seriedade, técnica e dedicação absoluta.
             </p>
           </div>
           <div className="mt-6 rounded-lg border border-white/10 bg-white/5 px-5 py-4 text-sm sm:text-base md:text-[15px] text-brand-white/90 italic">
-            “A defesa não é apenas um direito: é um pilar da justiça. Cada caso
-            representa uma vida e merece ser tratado com a máxima seriedade.”
+            “Advogar não é apenas atuar em processos: É lutar pela dignidade, pela liberdade e pela justiça que cada ser humano merece.”
           </div>
         </div>
       </div>

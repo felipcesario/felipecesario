@@ -24,7 +24,7 @@ export default function Header() {
     };
   }, [open]);
 
-  const emergencyPhone = "(48) 99144-7874";
+  const emergencyPhone = "5548991447874";
   const phoneDigits = useMemo(() => emergencyPhone.replace(/\D/g, ""), [emergencyPhone]);
   const telHref = `tel:${phoneDigits}`;
 

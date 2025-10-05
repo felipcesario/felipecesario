@@ -6,22 +6,25 @@ import { useMemo } from "react";
 
 export default function Apresentacao() {
   const name = "Felipe Cesario";
-  const headline = "Defesa Criminal estratégica e humanizada";
+  const headline =
+    "Advocacia especializada em Direito Criminal, atuando de forma estratégica e humanizada";
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
   const photoUrl = "/img/felipe2.jpg";
-  const whatsapp = "5599999999999"; 
+  const whatsapp = "5599999999999";
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";
   const secondaryCtaLabel = "Áreas de atuação";
-  const cityTag = "Atendimento 24h";
+  const cityTag = "Atendimento 24h em todo o Brasil";
 
   const waHref = useMemo(() => {
     if (!whatsapp) return undefined;
     const base = whatsapp.startsWith("+")
       ? whatsapp.replace(/\D/g, "")
       : `55${whatsapp.replace(/\D/g, "")}`;
-    const msg = encodeURIComponent(`Oi, sou ${name.split(" ")[0]}. Quero uma consulta.`);
+    const msg = encodeURIComponent(
+      `Oi, sou ${name.split(" ")[0]}. Quero uma consulta.`
+    );
     return `https://wa.me/${base}?text=${msg}`;
   }, []);
 
@@ -61,7 +64,7 @@ export default function Apresentacao() {
                 href={waHref}
                 target="_blank"
                 aria-label={`${ctaLabel} pelo WhatsApp`}
-                className="group w-full rounded-lg bg-sand px-5 py-3 text-center font-bold text-blue transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand/60 sm:w-auto"
+                className="group w-full rounded-lg bg-green-600 px-5 py-3 text-center font-bold text-white transition-transform hover:scale-[1.02] hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 sm:w-auto"
               >
                 {ctaLabel}
               </Link>
