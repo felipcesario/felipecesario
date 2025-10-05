@@ -28,7 +28,7 @@ export default function Header() {
   const phoneDigits = useMemo(() => emergencyPhone.replace(/\D/g, ""), [emergencyPhone]);
   const telHref = `tel:${phoneDigits}`;
 
-  const whatsappMessage = "Olá, preciso de atendimento urgente. Poderia me ajudar?";
+  const whatsappMessage = "Olá, preciso de ajuda.";
   const whatsappHref = useMemo(
     () => `https://wa.me/${phoneDigits}?text=${encodeURIComponent(whatsappMessage)}`,
     [phoneDigits]
@@ -89,7 +89,7 @@ export default function Header() {
           </Link>
 
           <div className="flex items-center gap-2">
-            {/* Ligar — agora botão vermelho */}
+            {/* Ligar — agora com texto diferente no desktop */}
             <a
               href={telHref}
               onClick={() => handleCallClick("header_ligar")}
@@ -106,7 +106,9 @@ export default function Header() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.11 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.88.33 1.73.63 2.54a2 2 0 0 1-.45 2.11L8.09 9.91a17.91 17.91 0 0 0 6 6l1.54-1.2a2 2 0 0 1 2.11-.45c.81.3 1.66.51 2.54.63A2 2 0 0 1 22 16.92Z" />
               </svg>
-              <span>Ligar</span>
+              {/* mobile: "Ligar" | desktop: "Emergência? Ligue Agora" */}
+              <span className="md:hidden">Ligar</span>
+              <span className="hidden md:inline">Emergência? Ligue Agora</span>
             </a>
 
             {/* Consultoria Jurídica — visual de botão (outline) */}

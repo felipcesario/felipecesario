@@ -28,7 +28,7 @@ export default function Home() {
 
       <Depoimentos
         idSecao="confianca"
-        casosSucesso={40}
+        casosSucesso={44}
         anosExperiencia={5}
       />
 
