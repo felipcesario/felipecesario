@@ -24,9 +24,14 @@ export default function Header() {
     };
   }, [open]);
 
-  const emergencyPhone = "05548991447874";
-  const phoneDigits = useMemo(() => emergencyPhone.replace(/\D/g, ""), [emergencyPhone]);
-  const telHref = `tel:${phoneDigits}`;
+  // ======== TELEFONE CORRIGIDO ========
+  const rawPhone = "+5548991447874";                // fonte da verdade
+  const telHref = `tel:${rawPhone}`;                // tel:+5548991447874
+  const phoneDigits = useMemo(() => rawPhone.replace(/\D/g, ""), [rawPhone]); // para dataLayer
+  const prettyPhone = useMemo(() => {
+    const m = rawPhone.replace(/\D/g, "").match(/^55(\d{2})(\d{5})(\d{4})$/);
+    return m ? `+55 (${m[1]}) ${m[2]}-${m[3]}` : rawPhone;
+  }, [rawPhone]);
 
   const whatsappMessage = "Olá, preciso de atendimento. Poderia me ajudar?";
   const whatsappHref = useMemo(
@@ -96,7 +101,7 @@ export default function Header() {
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500
                 whitespace-nowrap
               "
-              aria-label={`ligar para ${emergencyPhone}`}
+              aria-label={`ligar para ${prettyPhone}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.11 4.18 2 2 0  1 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.88.33 1.73.63 2.54a2 2 0 0 1-.45 2.11L8.09 9.91a17.91 17.91 0 0 0 6 6l1.54-1.2a2 2 0 0 1 2.11-.45c.81.3 1.66.51 2.54.63A2 2 0 0 1 22 16.92Z" />
@@ -157,11 +162,11 @@ export default function Header() {
               hover:bg-red-700 transition
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500
             "
-            aria-label={`ligar agora para emergências no número ${emergencyPhone}`}
+            aria-label={`ligar agora para emergências no número ${prettyPhone}`}
           >
             <span className="inline-flex items-center justify-center gap-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.11 4.18 2 2 0  1 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.88.33 1.73.63 2.54a2 2 0  1-2.56 2.11L8.09 9.91a17.91 17.91 0 0 0 6 6l1.54-1.2a2 2 0 0 1 2.11-.45c.81.3 1.66.51 2.54.63A2 2 0 0 1 22 16.92Z" />
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.11 4.18 2 2 0  1 1 4.11 2h3a2 2 0  1 1 2 1.72c.12.88.33 1.73.63 2.54a2 2 0  1-2.56 2.11L8.09 9.91a17.91 17.91 0 0 0 6 6l1.54-1.2a2 2 0 0 1 2.11-.45c.81.3 1.66.51 2.54.63A2 2 0 0 1 22 16.92Z" />
               </svg>
               <span>Emergência? Ligue agora</span>
             </span>
