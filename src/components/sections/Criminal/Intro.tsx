@@ -141,7 +141,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
       });
 
       // mensagem inicial no whatsapp (opcional)
-      const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site e preciso de ajuda urgente.`;
+      const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site.`;
       // abrir NA MESMA ABA evita bloqueio de pop-up
       window.location.href = buildWaLink(msg);
 

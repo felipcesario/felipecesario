@@ -117,7 +117,7 @@ export default function Contato() {
         phone: WHATSAPP_NUMBER,
       });
 
-      const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site e preciso de ajuda urgente.`;
+      const msg = `Olá, Felipe! Sou ${nome}. Vim pelo site.`;
       window.location.href = buildWaLink(msg);
 
       setNome("");
