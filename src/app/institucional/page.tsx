@@ -14,7 +14,6 @@ export default function Home() {
       <Apresentacao />
       <Atuacao />
       <Sobre />
-      <QuandoContatar />
       <Formulario />
       <Footer />
     </>
