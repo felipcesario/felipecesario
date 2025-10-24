@@ -16,7 +16,7 @@ function formatBRPhone(digits: string) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-const WHATSAPP_NUMBER = "5548991447874"; 
+const WHATSAPP_NUMBER = "5548991447874";
 
 function buildWaLink(message?: string) {
   const base = `https://wa.me/${WHATSAPP_NUMBER}`;
@@ -56,6 +56,7 @@ export default function Formulario() {
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
   const [utms, setUtms] = useState(loadPersistedUTMs());
+  const [triedSubmit, setTriedSubmit] = useState(false);
 
   useEffect(() => {
     const fresh = getUTMsFromLocation();
@@ -64,10 +65,22 @@ export default function Formulario() {
     persistUTMs(merged);
   }, []);
 
+  // ---- Validações leves (não quebram o fluxo atual) ----
+  const isValidPhone = (d: string) => d.length >= 10; // aceita 10 ou 11 dígitos (fixo/celular)
+  const canSubmit = nome.trim().length > 0 && isValidPhone(whatsappRaw);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setIsSending(true);
+    setTriedSubmit(true);
     setFeedback(null);
+
+    // Guard: só prossegue se estiver tudo preenchido/ok
+    if (!canSubmit) {
+      setFeedback({ type: "err", msg: "Preencha seu nome e um WhatsApp válido (com DDD) para continuar." });
+      return;
+    }
+
+    setIsSending(true);
 
     gtmPush({ event: "form_start", form_id: formId, section_path: sectionPath });
 
@@ -182,7 +195,11 @@ export default function Formulario() {
                     autoComplete="name"
                     name="nome"
                     aria-label="Seu nome"
+                    aria-invalid={triedSubmit && nome.trim().length === 0 ? "true" : "false"}
                   />
+                  {triedSubmit && nome.trim().length === 0 && (
+                    <p className="mt-1 text-xs text-red-600">Informe seu nome.</p>
+                  )}
                 </div>
 
                 <div className="mt-4">
@@ -204,7 +221,11 @@ export default function Formulario() {
                     className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
                     name="whatsapp"
                     aria-label="Seu WhatsApp (DDD e número)"
+                    aria-invalid={triedSubmit && !isValidPhone(whatsappRaw) ? "true" : "false"}
                   />
+                  {triedSubmit && !isValidPhone(whatsappRaw) && (
+                    <p className="mt-1 text-xs text-red-600">Digite um WhatsApp válido com DDD (mín. 10 dígitos).</p>
+                  )}
                 </div>
 
                 <div className="mt-4">
@@ -230,7 +251,7 @@ export default function Formulario() {
 
                 <button
                   type="submit"
-                  disabled={isSending}
+                  disabled={isSending || !canSubmit}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-3 text-base font-bold text-white shadow-[0_10px_24px_rgba(185,162,119,0.35)] transition hover:brightness-95 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-sand/60 focus:ring-offset-2 focus:ring-offset-brand-white disabled:opacity-60"
                   aria-live="polite"
                 >

@@ -7,7 +7,7 @@ import { useMemo } from "react";
 export default function Apresentacao() {
   const name = "Felipe Cesario";
   const headline =
-    "Advocacia especializada em Direito Criminal, atuando de forma estratégica e humanizada";
+    "Advocacia especializada em Direito Criminal, Civil e Família atuando de forma estratégica e humanizada";
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
   const photoUrl = "/img/felipe2.jpg";
