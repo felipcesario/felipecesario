@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
 
 export default function Apresentacao() {
   const name = "Felipe Cesario";
@@ -11,31 +10,19 @@ export default function Apresentacao() {
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
   const photoUrl = "/img/felipe2.jpg";
-  const whatsapp = "5548991447874"; // mantido, caso use em outros lugares
+  const whatsapp = "5548991447874"; // mantido
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";
   const secondaryCtaLabel = "Áreas de atuação";
   const cityTag = "Atendimento 24h em todo o Brasil";
 
-  // novo: link interno para a seção do formulário (sem quebrar nada existente)
-  const contactHref = useMemo(() => {
-    if (typeof window === "undefined") return "#consultoria_civil";
-    return `${window.location.pathname}#consultoria_civil`;
-  }, []);
+  // href estável para evitar mismatch entre SSR e cliente
+  const contactHref = "#consultoria_civil";
 
   return (
-    <section
-      id="inicio"
-      className="relative w-full bg-blue text-brand-white overflow-hidden"
-      aria-label="Seção de apresentação"
-    >
+    <section id="inicio" className="relative w-full bg-blue text-brand-white overflow-hidden" aria-label="Seção de apresentação">
       <div className="pointer-events-none absolute inset-x-0 -top-1 h-1 bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-70" />
-
-      {/* correção: h-[120vh] */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-[-15%] top-0 hidden h-[120vh] w-[60vw] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(205,176,112,0.20),rgba(205,176,112,0)_60%)] md:block"
-      />
+      <div aria-hidden className="pointer-events-none absolute right-[-15%] top-0 hidden h-[120vh] w-[60vw] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(205,176,112,0.20),rgba(205,176,112,0)_60%)] md:block" />
 
       <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 items-center gap-8 px-4 py-14 sm:px-6 md:min-h-[88vh] md:grid-cols-2 md:gap-8 lg:gap-10 md:py-20">
         {/* coluna de texto */}
@@ -54,7 +41,7 @@ export default function Apresentacao() {
           </p>
 
           <div className="mt-8 flex w-full flex-wrap items-center gap-3">
-            {/* botão passa a levar à seção do formulário */}
+            {/* leva à seção do formulário sem mismatch */}
             <Link
               href={contactHref}
               aria-label={`${ctaLabel} pelo formulário`}
