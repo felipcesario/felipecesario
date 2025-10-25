@@ -11,21 +11,16 @@ export default function Apresentacao() {
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
   const photoUrl = "/img/felipe2.jpg";
-  const whatsapp = "5548991447874";
+  const whatsapp = "5548991447874"; // mantido, caso use em outros lugares
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";
   const secondaryCtaLabel = "Áreas de atuação";
   const cityTag = "Atendimento 24h em todo o Brasil";
 
-  const waHref = useMemo(() => {
-    if (!whatsapp) return undefined;
-    const base = whatsapp.startsWith("+")
-      ? whatsapp.replace(/\D/g, "")
-      : `55${whatsapp.replace(/\D/g, "")}`;
-    const msg = encodeURIComponent(
-      `Oi, sou ${name.split(" ")[0]}. Quero uma consulta.`
-    );
-    return `https://wa.me/${base}?text=${msg}`;
+  // novo: link interno para a seção do formulário (sem quebrar nada existente)
+  const contactHref = useMemo(() => {
+    if (typeof window === "undefined") return "#consultoria_civil";
+    return `${window.location.pathname}#consultoria_civil`;
   }, []);
 
   return (
@@ -59,16 +54,14 @@ export default function Apresentacao() {
           </p>
 
           <div className="mt-8 flex w-full flex-wrap items-center gap-3">
-            {waHref && (
-              <Link
-                href={waHref}
-                target="_blank"
-                aria-label={`${ctaLabel} pelo WhatsApp`}
-                className="group w-full rounded-lg bg-green-600 px-5 py-3 text-center font-bold text-white transition-transform hover:scale-[1.02] hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 sm:w-auto"
-              >
-                {ctaLabel}
-              </Link>
-            )}
+            {/* botão passa a levar à seção do formulário */}
+            <Link
+              href={contactHref}
+              aria-label={`${ctaLabel} pelo formulário`}
+              className="group w-full rounded-lg bg-green-600 px-5 py-3 text-center font-bold text-white transition-transform hover:scale-[1.02] hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 sm:w-auto"
+            >
+              {ctaLabel}
+            </Link>
 
             <Link
               href={secondaryCtaHref}
