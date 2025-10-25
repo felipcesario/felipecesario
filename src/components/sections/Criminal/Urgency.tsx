@@ -40,6 +40,26 @@ function sendLeadBeacon(url: string, payload: unknown) {
   } catch {}
 }
 
+/* ======== VALIDAÇÕES (adicionado) ======== */
+const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ'’\-.()\s]{2,}$/; // letras, acentos e espaços, mínimo 2
+function validateName(value: string): string | null {
+  const v = (value || "").trim();
+  if (!v) return "Informe seu nome.";
+  if (!NAME_REGEX.test(v)) return "Nome inválido. Use apenas letras e espaços (mín. 2).";
+  return null;
+}
+function validatePhoneDigits(digits: string): string | null {
+  const d = onlyDigits(digits);
+  if (!d) return "Informe seu WhatsApp com DDD.";
+  if (d.length < 10 || d.length > 11) return "WhatsApp inválido. Use DDD + número (10 ou 11 dígitos).";
+  const ddd = d.slice(0, 2);
+  if (ddd.startsWith("0")) return "DDD inválido.";
+  // regra leve: se 11 dígitos (celular), geralmente o 3º dígito é 9
+  if (d.length === 11 && d[2] !== "9") return "Para celular, use o formato com 9 dígitos após o DDD.";
+  return null;
+}
+/* ========================================= */
+
 export default function Urgency({
   sectionId = "ajuda-urgente",
   title = "Cada minuto conta em casos criminais",
@@ -58,6 +78,14 @@ export default function Urgency({
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
   const [utms, setUtms] = useState(loadPersistedUTMs());
 
+  /* estados de toque para exibir erros só depois que o campo foi interagido (adicionado) */
+  const [touchedName, setTouchedName] = useState(false);
+  const [touchedPhone, setTouchedPhone] = useState(false);
+
+  /* erros derivados (adicionado) */
+  const nameError = validateName(nome);
+  const phoneError = validatePhoneDigits(whatsappRaw);
+
   useEffect(() => {
     const fresh = getUTMsFromLocation();
     const merged = { ...fresh, ...loadPersistedUTMs() };
@@ -67,8 +95,17 @@ export default function Urgency({
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setIsSending(true);
     setFeedback(null);
+
+    // validação antes de enviar (adicionado)
+    setTouchedName(true);
+    setTouchedPhone(true);
+    if (validateName(nome) || validatePhoneDigits(whatsappRaw)) {
+      setFeedback({ type: "err", msg: "Confira os campos em destaque antes de enviar." });
+      return;
+    }
+
+    setIsSending(true);
 
     gtmPush({ event: "form_start", form_id: formId, section_path: sectionPath });
 
@@ -121,6 +158,8 @@ export default function Urgency({
       setWhatsappRaw("");
       setSituacao("");
       setFeedback({ type: "ok", msg: "Enviado com sucesso! Você será redirecionado." });
+      setTouchedName(false);
+      setTouchedPhone(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
       setFeedback({ type: "err", msg });
@@ -184,13 +223,19 @@ export default function Urgency({
                     type="text"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
+                    onBlur={() => setTouchedName(true)} /* adicionado */
                     required
                     placeholder="Seu nome"
-                    className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
+                    className={`mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40 ${touchedName && nameError ? "border-red-500" : ""}`}
                     autoComplete="name"
                     name="nome"
                     aria-label="Seu nome"
+                    aria-invalid={touchedName && !!nameError}
+                    aria-describedby={touchedName && nameError ? `${formId}-nome-err` : undefined}
                   />
+                  {touchedName && nameError && (
+                    <p id={`${formId}-nome-err`} className="mt-1 text-xs text-red-600">{nameError}</p>
+                  )}
                 </div>
 
                 <div className="mt-4">
@@ -207,12 +252,18 @@ export default function Urgency({
                       const digits = onlyDigits((e.clipboardData.getData("text") || "").toString()).slice(0, 11);
                       setWhatsappRaw(digits);
                     }}
+                    onBlur={() => setTouchedPhone(true)} /* adicionado */
                     required
                     placeholder="Seu WhatsApp (DDD e número)"
-                    className="mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40"
+                    className={`mt-2 w-full rounded-xl border border-blue/20 bg-brand-white px-4 py-3 text-blue placeholder:text-blue/40 outline-none focus:border-sand focus:ring-2 focus:ring-sand/40 ${touchedPhone && phoneError ? "border-red-500" : ""}`}
                     name="whatsapp"
                     aria-label="Seu WhatsApp (DDD e número)"
+                    aria-invalid={touchedPhone && !!phoneError}
+                    aria-describedby={touchedPhone && phoneError ? `${formId}-cel-err` : undefined}
                   />
+                  {touchedPhone && phoneError && (
+                    <p id={`${formId}-cel-err`} className="mt-1 text-xs text-red-600">{phoneError}</p>
+                  )}
                 </div>
 
                 <div className="mt-4">

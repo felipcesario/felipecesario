@@ -63,6 +63,20 @@ function sendLeadBeacon(url: string, payload: unknown) {
   }
 }
 
+/* ======== VALIDAÇÕES (adicionadas) ======== */
+function isValidName(value: string) {
+  const v = value.trim();
+  // letras (com acentos), espaços, apóstrofo e hífen; pelo menos 2 caracteres
+  return v.length >= 2 && /^[A-Za-zÀ-ÿ' -]+$/.test(v);
+}
+
+function isValidPhoneBR(rawDigits: string) {
+  // aceita 10 (fixo) ou 11 (celular) dígitos
+  const d = onlyDigits(rawDigits);
+  return d.length === 10 || d.length === 11;
+}
+/* ========================================= */
+
 export default function Intro({ name, photoUrl, cityTag }: Props) {
   void cityTag; // evitar warning
 
@@ -81,6 +95,10 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
   const [utms, setUtms] = useState(loadPersistedUTMs());
 
+  /* ======== ESTADO DE ERROS (adicionado) ======== */
+  const [errors, setErrors] = useState<{ nome?: string; whatsapp?: string }>({});
+  /* ============================================= */
+
   useEffect(() => {
     const fresh = getUTMsFromLocation();
     const merged = { ...fresh, ...loadPersistedUTMs() };
@@ -92,11 +110,41 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
     const digits = onlyDigits(e.target.value);
     setWhatsappRaw(digits);
     setWhatsappDisplay(formatPhoneBR(digits));
+
+    // validação em tempo real (telefone)
+    if (digits === "" || isValidPhoneBR(digits)) {
+      setErrors((prev) => ({ ...prev, whatsapp: undefined }));
+    } else {
+      setErrors((prev) => ({ ...prev, whatsapp: "Informe um WhatsApp válido (DDD + número)." }));
+    }
+  }
+
+  function onChangeNome(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setNome(value);
+
+    // validação em tempo real (nome)
+    if (value === "" || isValidName(value)) {
+      setErrors((prev) => ({ ...prev, nome: undefined }));
+    } else {
+      setErrors((prev) => ({ ...prev, nome: "Informe seu nome completo (mín. 2 letras)." }));
+    }
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFeedback(null);
+
+    // validação no submit (não altera fluxos existentes)
+    const nextErrors: { nome?: string; whatsapp?: string } = {};
+    if (!isValidName(nome)) nextErrors.nome = "Informe seu nome completo (mín. 2 letras).";
+    if (!isValidPhoneBR(whatsappRaw)) nextErrors.whatsapp = "Informe um WhatsApp válido (DDD + número).";
+
+    if (nextErrors.nome || nextErrors.whatsapp) {
+      setErrors(nextErrors);
+      return; // impede envio se inválido, sem quebrar o resto
+    }
+
     setIsSending(true);
 
     // início do envio
@@ -183,13 +231,20 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 type="text"
                 placeholder="Seu nome"
                 value={nome}
-                onChange={(e) => setNome(e.target.value)}
+                onChange={onChangeNome}
                 className="w-full rounded-md border border-white/15 bg-white/10 px-4 py-3 sm:py-4 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
                 required
                 autoComplete="name"
                 name="nome"
                 aria-label="Seu nome"
+                aria-invalid={!!errors.nome}
+                aria-describedby={errors.nome ? "erro-nome" : undefined}
               />
+              {errors.nome && (
+                <p id="erro-nome" className="text-xs mt-1 text-red-300">
+                  {errors.nome}
+                </p>
+              )}
 
               <input
                 type="tel"
@@ -202,7 +257,14 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
                 autoComplete="tel"
                 name="whatsapp"
                 aria-label="Seu WhatsApp (DDD e número)"
+                aria-invalid={!!errors.whatsapp}
+                aria-describedby={errors.whatsapp ? "erro-whatsapp" : undefined}
               />
+              {errors.whatsapp && (
+                <p id="erro-whatsapp" className="text-xs mt-1 text-red-300">
+                  {errors.whatsapp}
+                </p>
+              )}
 
               <button
                 type="submit"

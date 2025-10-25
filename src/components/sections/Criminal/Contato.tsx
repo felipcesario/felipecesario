@@ -17,6 +17,20 @@ function formatBRPhone(digits: string) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
+// validação
+function validateName(name: string) {
+  const n = name.trim();
+  if (n.length < 2) return "Informe pelo menos 2 caracteres.";
+  const ok = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/.test(n);
+  if (!ok) return "Use apenas letras (acentos, espaço, '-' e '´' são permitidos).";
+  return null;
+}
+function validatePhone(digits: string) {
+  const d = onlyDigits(digits);
+  if (d.length < 10 || d.length > 11) return "Digite DDD + número (10 ou 11 dígitos).";
+  return null;
+}
+
 // tipagem segura para sendBeacon
 type NavigatorWithBeacon = Navigator & {
   sendBeacon?: (url: string | URL, data?: BodyInit) => boolean;
@@ -65,6 +79,10 @@ export default function Contato() {
   const [feedback, setFeedback] = useState<null | { type: "ok" | "err"; msg: string }>(null);
   const [utms, setUtms] = useState(loadPersistedUTMs());
 
+  // erros de validação
+  const [nomeError, setNomeError] = useState<string | null>(null);
+  const [whatsError, setWhatsError] = useState<string | null>(null);
+
   useEffect(() => {
     const fresh = getUTMsFromLocation();
     const merged = { ...fresh, ...loadPersistedUTMs() };
@@ -82,6 +100,23 @@ export default function Contato() {
       form_id: formId,
       section_path: sectionPath,
     });
+
+    // valida antes de prosseguir
+    const nErr = validateName(nome);
+    const wErr = validatePhone(whatsapp);
+    setNomeError(nErr);
+    setWhatsError(wErr);
+    if (nErr || wErr) {
+      setIsSending(false);
+      setFeedback({ type: "err", msg: "Verifique os campos destacados e tente novamente." });
+      gtmPush({
+        event: "form_error",
+        form_id: formId,
+        section_path: sectionPath,
+        error_message: "validation_error",
+      });
+      return;
+    }
 
     const payload = {
       form_id: formId,
@@ -122,6 +157,8 @@ export default function Contato() {
 
       setNome("");
       setWhatsapp("");
+      setNomeError(null);
+      setWhatsError(null);
       setFeedback({ type: "ok", msg: "Enviado com sucesso!" });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao enviar. Tente novamente.";
@@ -167,14 +204,21 @@ export default function Contato() {
                 id="nome"
                 type="text"
                 value={nome}
-                onChange={(e) => setNome(e.target.value)}
+                onChange={(e) => {
+                  setNome(e.target.value);
+                  if (nomeError) setNomeError(null);
+                }}
+                onBlur={() => setNomeError(validateName(nome))}
                 placeholder="Seu nome"
                 required
                 className="w-full rounded-xl border border-white/20 bg-white/95 text-blue placeholder-blue/60 px-4 py-3 sm:py-3.5 text-[16px] sm:text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-sand/80"
                 autoComplete="name"
                 name="nome"
                 aria-label="Seu nome"
+                aria-invalid={!!nomeError}
+                aria-describedby={nomeError ? "nome-error" : undefined}
               />
+              {nomeError && <p id="nome-error" className="mt-1 text-[12px] text-red-300">{nomeError}</p>}
             </div>
 
             <div className="md:col-span-1">
@@ -185,7 +229,11 @@ export default function Contato() {
                 id="whatsapp"
                 type="tel"
                 value={formatBRPhone(onlyDigits(whatsapp))} // exibe formatado
-                onChange={(e) => setWhatsapp(onlyDigits(e.target.value))} // guarda dígitos
+                onChange={(e) => {
+                  setWhatsapp(onlyDigits(e.target.value)); // guarda dígitos
+                  if (whatsError) setWhatsError(null);
+                }}
+                onBlur={() => setWhatsError(validatePhone(whatsapp))}
                 placeholder="Seu WhatsApp (DDD e número)"
                 required
                 inputMode="tel"
@@ -195,7 +243,10 @@ export default function Contato() {
                 autoComplete="tel"
                 name="whatsapp"
                 aria-label="Seu WhatsApp (DDD e número)"
+                aria-invalid={!!whatsError}
+                aria-describedby={whatsError ? "whats-error" : undefined}
               />
+              {whatsError && <p id="whats-error" className="mt-1 text-[12px] text-red-300">{whatsError}</p>}
             </div>
 
             <div className="md:col-span-2 pt-1">
