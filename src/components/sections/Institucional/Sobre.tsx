@@ -16,7 +16,7 @@ export default function Sobre() {
         <div className="relative mx-auto order-1 w-[80vw] max-w-[380px] sm:max-w-[420px] md:max-w-[360px] lg:max-w-[440px]">
           <div className="absolute -inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_26px_70px_-20px_rgba(0,0,0,0.6)]" />
           <Image
-            src="/img/felipe2.jpg"
+            src="/img/felipe3.jpg"
             alt="Foto de Felipe Cesario"
             width={520}
             height={640}

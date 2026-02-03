@@ -14,14 +14,14 @@ export default function Home() {
 
       <Intro
         name="Felipe Cesario"
-        photoUrl="/img/felipe3.jpg"
+        photoUrl="/img/felipe2.jpg"
       />
 
       <Authority
         sectionId="autoridade"
         lawyerName="Felipe Cesario"
         oab="OAB/SC N° 71.088"
-        photoUrl="/img/felipe2.jpg"
+        photoUrl="/img/felipe3.jpg"
       />
 
       <Urgency sectionId="atuacao" />
