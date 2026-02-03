@@ -9,7 +9,7 @@ export default function Apresentacao() {
     "Advocacia especializada em Direito Criminal, Civil e Família atuando de forma estratégica e humanizada";
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
-  const photoUrl = "/img/felipe2.jpg";
+  const photoUrl = "/img/felipe3.jpg";
   const whatsapp = "5548991447874"; // mantido
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";

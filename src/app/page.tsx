@@ -14,7 +14,7 @@ export default function Home() {
 
       <Intro
         name="Felipe Cesario"
-        photoUrl="/img/felipe2.jpg"
+        photoUrl="/img/felipe3.jpg"
       />
 
       <Authority
