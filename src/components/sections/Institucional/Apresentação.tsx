@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Apresentacao() {
@@ -9,23 +8,30 @@ export default function Apresentacao() {
     "Advocacia especializada em Direito Criminal, Civil e Família atuando de forma estratégica e humanizada";
   const subheadline =
     "Prestação de serviço de advocacia responsável e eficiente.";
-  const photoUrl = "/img/felipe2.jpg";
-  const whatsapp = "5548991447874"; // mantido
+  const photoUrl = "/img/felipe.jpg";
+  const whatsapp = "5548991447874";
   const ctaLabel = "Entrar em Contato";
   const secondaryCtaHref = "#atuacao";
   const secondaryCtaLabel = "Áreas de atuação";
   const cityTag = "Atendimento 24h em todo o Brasil";
 
-  // href estável para evitar mismatch entre SSR e cliente
+  void whatsapp;
+
   const contactHref = "#consultoria_civil";
 
   return (
-    <section id="inicio" className="relative w-full bg-blue text-brand-white overflow-hidden" aria-label="Seção de apresentação">
+    <section
+      id="inicio"
+      className="relative w-full bg-blue text-brand-white overflow-hidden"
+      aria-label="Seção de apresentação"
+    >
       <div className="pointer-events-none absolute inset-x-0 -top-1 h-1 bg-gradient-to-r from-sand/0 via-sand/40 to-sand/0 opacity-70" />
-      <div aria-hidden className="pointer-events-none absolute right-[-15%] top-0 hidden h-[120vh] w-[60vw] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(205,176,112,0.20),rgba(205,176,112,0)_60%)] md:block" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-[-15%] top-0 hidden h-[120vh] w-[60vw] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(205,176,112,0.20),rgba(205,176,112,0)_60%)] md:block"
+      />
 
       <div className="mx-auto grid max-w-7xl min-h-[88svh] grid-cols-1 items-center gap-8 px-4 py-14 sm:px-6 md:min-h-[88vh] md:grid-cols-2 md:gap-8 lg:gap-10 md:py-20">
-        {/* coluna de texto */}
         <div className="order-1 md:order-1 md:pl-6 lg:pl-10">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] sm:text-xs tracking-wide">
             <span className="inline-block h-2 w-2 rounded-full bg-sand" />
@@ -41,7 +47,6 @@ export default function Apresentacao() {
           </p>
 
           <div className="mt-8 flex w-full flex-wrap items-center gap-3">
-            {/* leva à seção do formulário sem mismatch */}
             <Link
               href={contactHref}
               aria-label={`${ctaLabel} pelo formulário`}
@@ -59,19 +64,16 @@ export default function Apresentacao() {
           </div>
         </div>
 
-        {/* coluna da foto */}
         <div className="order-2 md:order-2">
-          <div className="relative mx-auto aspect-square w-[78vw] max-w-[360px] sm:max-w-[380px] md:max-w-[420px] lg:max-w-[460px]">
-            <div className="absolute -inset-3 -z-10 rounded-2xl bg-white/5 backdrop-blur-md ring-1 ring-white/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]" />
-            <div className="absolute -inset-[2px] -z-10 rounded-[18px] ring-1 ring-white/10" />
-            <Image
-              src={photoUrl}
-              alt={`Foto de ${name}`}
-              fill
-              sizes="(min-width: 1024px) 460px, (min-width: 768px) 420px, (min-width: 640px) 380px, 78vw"
-              className="rounded-xl object-cover ring-1 ring-white/10"
-              priority
-            />
+          <div className="relative mx-auto w-[78vw] max-w-[320px] sm:max-w-[370px] md:max-w-[400px] lg:max-w-[420px]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/15 shadow-xl">
+              <img
+                src={photoUrl}
+                alt={`Foto de ${name}`}
+                className="h-full w-full object-cover object-center"
+                loading="eager"
+              />
+            </div>
           </div>
         </div>
       </div>
