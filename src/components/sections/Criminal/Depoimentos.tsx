@@ -13,8 +13,8 @@ const cardBase =
 
 export default function Depoimentos({
   idSecao = "confianca",
-  titulo = "Confiança comprovada na defesa dos nossos clientes",
-  casosSucesso = 44,
+  titulo = "Confiança comprovada na defesa dos nossos clientes!",
+  casosSucesso = 45,
   anosExperiencia = 5,
   reconhecimentoTexto = "Advogado atuante e respeitado em tribunais e reconhecido por sua atuação humanizada e estratégica.",
 }: Props) {
