@@ -96,8 +96,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <GtmPageView />
         <GtmSectionViews sectionIds={["inicio", "ajuda-urgente", "contato"]} />
 
-        {children}
-        <script src="https://cdn.egoi.site/1787372_felipecesarioadv.com.br.js" async defer></script>                            
+        {children}                                    
       </body>
     </html>
   );
