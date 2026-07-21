@@ -56,6 +56,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${ptSerif.variable} ${montserrat.variable}`}>
       <head>
+        <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M4ZCX99R');</script>
+<!-- End Google Tag Manager -->
         {/* dataLayer + loader */}
         <Script id="gtm-loader" strategy="afterInteractive">
           {`
@@ -71,6 +78,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="min-h-dvh overflow-x-hidden bg-brand-black text-brand-white font-sans antialiased">
+        <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M4ZCX99R"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
         {/* noscript iframe */}
         <noscript>
           <iframe
