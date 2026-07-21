@@ -86,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GtmSectionViews sectionIds={["inicio", "ajuda-urgente", "contato"]} />
 
         {children}
+        <script src="https://cdn.egoi.site/1787372_felipecesarioadv.com.br.js" async defer></script>                            
       </body>
     </html>
   );
