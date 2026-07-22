@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
         <Script
           id="gtm-src"
-          src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
+          src={`https://www.googletagmanager.com/gtm.js?id=${GTM-M4ZCX99R}`}
           strategy="afterInteractive"
         />
       </head>
@@ -73,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-dvh overflow-x-hidden bg-brand-black text-brand-white font-sans antialiased">        
         <noscript>
           <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM-M4ZCX99R}`}
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
