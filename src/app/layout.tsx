@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   }
 }
 
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-M4ZCX99R";
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-M4ZCX99";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
