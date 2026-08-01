@@ -204,7 +204,10 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
           </p>
 
           <div className="mt-6 w-full max-w-md sm:max-w-md md:max-w-lg mx-auto md:mx-0 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 shadow-lg p-6 overflow-hidden">
-            <form onSubmit={onSubmit} className="space-y-4" noValidate>
+            <script src="https://js.hsforms.net/forms/embed/51817943.js" defer></script>
+<div class="hs-form-frame" data-region="na1" data-form-id="10feee4a-6363-477c-abbd-bf5f18fc8e76" data-portal-id="51817943"></div>
+            
+            {/* <form onSubmit={onSubmit} className="space-y-4" noValidate>
               <input
                 type="text"
                 placeholder="Seu nome"
@@ -230,7 +233,7 @@ export default function Intro({ name, photoUrl, cityTag }: Props) {
               >
                 {isSending ? "Enviando..." : "Falar com Advogado"}
               </button>
-            </form>
+            </form> */}
           </div>
         </div>
 
